@@ -27,7 +27,7 @@ public class Enrollment {
     private Long userId;
 
     @Column(name = "course_id", nullable = false)
-    private Long courseId;
+    private String courseId;
 
     @Column(name = "enrolled_at", nullable = false)
     private LocalDateTime enrolledAt;

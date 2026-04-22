@@ -27,7 +27,7 @@ public class Progress {
     private Long userId;
 
     @Column(name = "course_id", nullable = false)
-    private Long courseId;
+    private String courseId;
 
     @Column(name = "completed_lessons", nullable = false)
     private Integer completedLessons;
