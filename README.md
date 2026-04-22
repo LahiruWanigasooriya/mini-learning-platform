@@ -174,6 +174,3 @@ http://localhost:5003
 
 ---
 
-# 👨‍💻 Author
-
-Parakkrama Dasanayaka
