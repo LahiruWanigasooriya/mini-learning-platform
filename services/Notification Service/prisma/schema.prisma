@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Notification {
+  id                  Int                     @id @default(autoincrement())
+  userId              Int
+  title               String
+  message             String                  @db.Text
+  type                String
+  status              String                  @default("PENDING")
+  createdAt           DateTime                @default(now())
+  sentAt              DateTime?
+  readAt              DateTime?
+  NotificationQueueItem NotificationQueueItem[]
+
+  @@map("notifications")
+}
+
+model NotificationTemplate {
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  subjectTemplate String
+  bodyTemplate    String   @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("notification_templates")
+}
+
+model NotificationEvent {
+  id            Int       @id @default(autoincrement())
+  eventType     String
+  payload       Json?
+  sourceService String
+  processed     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  processedAt   DateTime?
+
+  @@map("notification_events")
+}
+
+model EmailJob {
+  id             Int      @id @default(autoincrement())
+  recipientEmail String
+  subject        String
+  body           String   @db.Text
+  status         String   @default("PENDING")
+  errorMessage   String?  @db.Text
+  retryCount     Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("email_jobs")
+}
+
+model NotificationQueueItem {
+  id             Int          @id @default(autoincrement())
+  notificationId Int
+  priority       Int          @default(0)
+  status         String       @default("QUEUED")
+  scheduledFor   DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  notification   Notification @relation(fields: [notificationId], references: [id])
+
+  @@map("notification_queue_items")
+}
