@@ -1,13 +1,11 @@
 from fastapi import FastAPI
-from app.database import course_collection
+from app.routes.course_routes import router as course_router
 
-app = FastAPI()
+app = FastAPI(title="Course Catalog Service")
+
+app.include_router(course_router)
+
 
 @app.get("/")
 def root():
     return {"message": "Course Catalog Service Running"}
-
-@app.get("/test-db")
-def test_db():
-    course_collection.insert_one({"title": "Test Course"})
-    return {"message": "Inserted test course"}
