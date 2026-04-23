@@ -1,4 +1,5 @@
 package SimpleLMS.EPService.DTO;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -8,9 +9,9 @@ public class CompleteLessonRequest {
     @NotNull(message = "userId is required")
     private Long userId;
 
-    @NotNull(message = "courseId is required")
-    private Long courseId;
+    @NotBlank(message = "courseId is required")
+    private String courseId;
 
-    @NotNull(message = "lessonId is required")
-    private Long lessonId;
+    @NotBlank(message = "lessonId is required")
+    private String lessonId;
 }

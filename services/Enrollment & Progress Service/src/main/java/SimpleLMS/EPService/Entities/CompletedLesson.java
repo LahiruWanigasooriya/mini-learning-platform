@@ -27,7 +27,7 @@ public class CompletedLesson {
     private Long userId;
 
     @Column(name = "course_id", nullable = false)
-    private Long courseId;
+    private String courseId;
 
     @Column(name = "lesson_id", nullable = false)
     private Long lessonId;
