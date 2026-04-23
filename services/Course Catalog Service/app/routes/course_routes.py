@@ -5,12 +5,12 @@ from app.services.course_service import CourseService
 router = APIRouter(prefix="/api/courses", tags=["Courses"])
 
 
-@router.post("")
+@router.post("/create")
 def create_course(course: CourseCreateSchema):
     return CourseService.create_course(course.model_dump())
 
 
-@router.get("")
+@router.get("/get_courses")
 def get_all_courses():
     return CourseService.get_all_courses()
 
