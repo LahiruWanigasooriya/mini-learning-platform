@@ -1,0 +1,34 @@
+# ========================
+# IDE files
+# ========================
+.idea/
+.vscode/
+
+# ========================
+# Java / Spring Boot
+# ========================
+target/
+*.log
+*.class
+
+# Maven wrapper logs
+.mvn/wrapper/maven-wrapper.jar
+
+# ========================
+# Node / React
+# ========================
+node_modules/
+dist/
+build/
+.env
+
+# ========================
+# OS files
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# Docker (optional later)
+# ========================
+*.env
