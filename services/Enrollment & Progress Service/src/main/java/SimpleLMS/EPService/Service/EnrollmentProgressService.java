@@ -2,16 +2,19 @@ package SimpleLMS.EPService.Service;
 
 
 import SimpleLMS.EPService.DTO.CompleteLessonRequest;
+import SimpleLMS.EPService.DTO.CourseSummaryResponse;
 import SimpleLMS.EPService.DTO.EnrollmentRequest;
 import SimpleLMS.EPService.Entities.CompletedLesson;
 import SimpleLMS.EPService.Entities.Enrollment;
 import SimpleLMS.EPService.Entities.Progress;
 import SimpleLMS.EPService.Enum.EnrollmentStatus;
+import SimpleLMS.EPService.Exceptions.BadRequestException;
 import SimpleLMS.EPService.Exceptions.ConflictException;
 import SimpleLMS.EPService.Exceptions.ResourceNotFoundException;
 import SimpleLMS.EPService.Repositories.CompletedLessonRepository;
 import SimpleLMS.EPService.Repositories.EnrollmentRepository;
 import SimpleLMS.EPService.Repositories.ProgressRepository;
+import SimpleLMS.EPService.client.CourseCatalogClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +27,16 @@ public class EnrollmentProgressService {
     private final EnrollmentRepository enrollmentRepository;
     private final ProgressRepository progressRepository;
     private final CompletedLessonRepository completedLessonRepository;
+    private final CourseCatalogClient courseCatalogClient;
 
     public EnrollmentProgressService(EnrollmentRepository enrollmentRepository,
                                      ProgressRepository progressRepository,
-                                     CompletedLessonRepository completedLessonRepository) {
+                                     CompletedLessonRepository completedLessonRepository,
+                                     CourseCatalogClient courseCatalogClient) {
         this.enrollmentRepository = enrollmentRepository;
         this.progressRepository = progressRepository;
         this.completedLessonRepository = completedLessonRepository;
+        this.courseCatalogClient = courseCatalogClient;
     }
 
     @Transactional
@@ -38,6 +44,12 @@ public class EnrollmentProgressService {
 
         if (enrollmentRepository.existsByUserIdAndCourseId(request.getUserId(), request.getCourseId())) {
             throw new ConflictException("User is already enrolled in this course");
+        }
+
+        CourseSummaryResponse course = courseCatalogClient.getCourseSummary(request.getCourseId());
+
+        if (Boolean.FALSE.equals(course.getActive())) {
+            throw new BadRequestException("Course is not active");
         }
 
         Enrollment enrollment = new Enrollment();
@@ -52,7 +64,7 @@ public class EnrollmentProgressService {
         progress.setUserId(request.getUserId());
         progress.setCourseId(request.getCourseId());
         progress.setCompletedLessons(0);
-        progress.setTotalLessons(0);
+        progress.setTotalLessons(course.getTotalLessons());
         progress.setProgressPercentage(0.0);
         progress.setLastUpdated(LocalDateTime.now());
 
@@ -90,7 +102,8 @@ public class EnrollmentProgressService {
         CompletedLesson completedLesson = new CompletedLesson();
         completedLesson.setUserId(request.getUserId());
         completedLesson.setCourseId(request.getCourseId());
-        completedLesson.setLessonId(request.getLessonId());
+        //chnage Long to string
+        completedLesson.setLessonId(Long.valueOf(request.getLessonId()));
         completedLesson.setCompletedAt(LocalDateTime.now());
 
         completedLessonRepository.save(completedLesson);
@@ -123,7 +136,8 @@ public class EnrollmentProgressService {
     }
 
     public Progress getProgress(Long userId, Long courseId) {
-        return progressRepository.findByUserIdAndCourseId(userId, courseId)
+        //chnage Long to string
+        return progressRepository.findByUserIdAndCourseId(userId, String.valueOf(courseId))
                 .orElseThrow(() -> new ResourceNotFoundException("Progress not found"));
     }
 }
