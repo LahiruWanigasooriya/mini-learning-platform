@@ -17,4 +17,5 @@ export const deleteCourse = (id: string) => api.delete(`/courses/${id}`);
 export const enrollInCourse = (data: any) => api.post('/enrollments', data);
 export const getUserEnrollments = (userId: number) => api.get(`/enrollments/user/${userId}`);
 export const completeLesson = (data: any) => api.post('/enrollments/progress/complete-lesson', data);
+export const getProgress = (userId: number, courseId: string) => api.get(`/enrollments/progress/user/${userId}/course/${courseId}`);
 
