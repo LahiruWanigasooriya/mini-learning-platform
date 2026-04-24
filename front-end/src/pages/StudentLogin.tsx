@@ -18,35 +18,17 @@ const StudentLogin: React.FC = () => {
     setError('');
     setLoading(true);
 
-    try {
-      const response = await loginUser({ email, password });
-      const data = response.data?.data || response.data;
-
-      if (data?.accessToken) {
-        // Check if user has STUDENT role
-        const roles: string[] = data.user?.roles || [];
-        if (roles.length > 0 && !roles.includes('STUDENT')) {
-          setError('This account is not registered as a Student. Please use the Instructor login.');
-          setLoading(false);
-          return;
-        }
-        login(data.accessToken, data.user);
-        navigate('/dashboard');
-      } else {
-        login('mock_jwt_token_student', { id: 1, email, role: 'STUDENT', firstName: 'Student' });
-        navigate('/dashboard');
-      }
-    } catch (err: any) {
-      console.error(err);
-      if (email === 'student@example.com') {
-        login('mock_jwt_token_student', { id: 1, email, role: 'STUDENT', firstName: 'Student' });
-        navigate('/dashboard');
-      } else {
-        setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
+    // TODO: Remove bypass — temporary mock login for testing
+    setTimeout(() => {
+      login('mock_jwt_token_student', {
+        id: 1,
+        email: email || 'student@example.com',
+        role: 'STUDENT',
+        firstName: 'Student',
+        lastName: 'User',
+      });
+      navigate('/dashboard');
+    }, 600);
   };
 
   return (

@@ -18,35 +18,17 @@ const InstructorLogin: React.FC = () => {
     setError('');
     setLoading(true);
 
-    try {
-      const response = await loginUser({ email, password });
-      const data = response.data?.data || response.data;
-
-      if (data?.accessToken) {
-        // Check if user has INSTRUCTOR role
-        const roles: string[] = data.user?.roles || [];
-        if (roles.length > 0 && !roles.includes('INSTRUCTOR')) {
-          setError('This account is not registered as an Instructor. Please use the Student login.');
-          setLoading(false);
-          return;
-        }
-        login(data.accessToken, data.user);
-        navigate('/instructor/dashboard');
-      } else {
-        login('mock_jwt_token_instructor', { id: 2, email, role: 'INSTRUCTOR', firstName: 'Instructor' });
-        navigate('/instructor/dashboard');
-      }
-    } catch (err: any) {
-      console.error(err);
-      if (email === 'instructor@example.com') {
-        login('mock_jwt_token_instructor', { id: 2, email, role: 'INSTRUCTOR', firstName: 'Instructor' });
-        navigate('/instructor/dashboard');
-      } else {
-        setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
+    // TODO: Remove bypass — temporary mock login for testing
+    setTimeout(() => {
+      login('mock_jwt_token_instructor', {
+        id: 2,
+        email: email || 'instructor@example.com',
+        role: 'INSTRUCTOR',
+        firstName: 'Instructor',
+        lastName: 'User',
+      });
+      navigate('/instructor/dashboard');
+    }, 600);
   };
 
   return (
