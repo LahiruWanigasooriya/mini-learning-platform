@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BookOpen, UserCircle, LogOut } from 'lucide-react';
+import { BookOpen, UserCircle, LogOut, GraduationCap, Users } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar: React.FC = () => {
@@ -11,6 +11,11 @@ const Navbar: React.FC = () => {
     logout();
     navigate('/login');
   };
+
+  // Determine role for styling and dashboard link
+  const isInstructor = user?.role === 'INSTRUCTOR' ||
+    (Array.isArray((user as any)?.roles) && (user as any).roles.includes('INSTRUCTOR'));
+  const dashboardPath = isInstructor ? '/instructor/dashboard' : '/dashboard';
 
   return (
     <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
@@ -26,10 +31,22 @@ const Navbar: React.FC = () => {
           <div className="flex items-center gap-4">
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="text-slate-600 hover:text-brand-600 font-medium transition-colors">
-                  My Learning
+                <Link to={dashboardPath} className="text-slate-600 hover:text-brand-600 font-medium transition-colors">
+                  {isInstructor ? 'Dashboard' : 'My Learning'}
                 </Link>
                 <div className="flex items-center gap-2 pl-4 border-l border-slate-200">
+                  {/* Role badge */}
+                  {isInstructor ? (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200">
+                      <Users className="h-3 w-3" />
+                      Instructor
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-brand-50 text-brand-700 border border-brand-200">
+                      <GraduationCap className="h-3 w-3" />
+                      Student
+                    </span>
+                  )}
                   <UserCircle className="h-6 w-6 text-slate-400" />
                   <span className="text-sm font-medium text-slate-700">{user?.firstName || 'User'}</span>
                   <button 

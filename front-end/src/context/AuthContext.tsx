@@ -6,14 +6,17 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (token: string) => void;
+  login: (token: string, userData?: User) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored) : null;
+  });
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
 
@@ -21,23 +24,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (token) {
       localStorage.setItem('token', token);
       setIsAuthenticated(true);
-      // Fetch user profile
-      getUserProfile()
-        .then((res) => setUser(res.data))
-        .catch(() => logout()); // Token might be invalid
+
+      // Only fetch profile if we don't already have user data
+      if (!user) {
+        getUserProfile()
+          .then((res) => {
+            const userData = res.data?.data || res.data;
+            setUser(userData);
+            localStorage.setItem('user', JSON.stringify(userData));
+          })
+          .catch(() => logout()); // Token might be invalid
+      }
     } else {
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       setIsAuthenticated(false);
       setUser(null);
     }
   }, [token]);
 
-  const login = (newToken: string) => {
+  const login = (newToken: string, userData?: User) => {
     setToken(newToken);
+    if (userData) {
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+    }
   };
 
   const logout = () => {
     setToken(null);
+    setUser(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   return (

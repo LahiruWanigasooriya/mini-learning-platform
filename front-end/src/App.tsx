@@ -3,9 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
-import Login from './pages/Login';
+import LoginSelect from './pages/LoginSelect';
+import StudentLogin from './pages/StudentLogin';
+import InstructorLogin from './pages/InstructorLogin';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import InstructorDashboard from './pages/InstructorDashboard';
 import CourseDetail from './pages/CourseDetail';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -20,10 +23,15 @@ const AppRoutes = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          {/* Auth Routes */}
+          <Route path="/login" element={<LoginSelect />} />
+          <Route path="/login/student" element={<StudentLogin />} />
+          <Route path="/login/instructor" element={<InstructorLogin />} />
           <Route path="/register" element={<Register />} />
+          {/* Protected Routes */}
           <Route path="/course/:id" element={<CourseDetail />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/instructor/dashboard" element={<ProtectedRoute><InstructorDashboard /></ProtectedRoute>} />
         </Routes>
       </main>
     </div>
