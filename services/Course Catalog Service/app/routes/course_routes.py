@@ -1,6 +1,7 @@
 from fastapi import APIRouter
-from app.schemas.course import CourseCreateSchema
+from app.schemas.course import CourseCreateSchema ,CourseUpdateSchema
 from app.services.course_service import CourseService
+
 
 router = APIRouter(prefix="/api/courses", tags=["Courses"])
 
@@ -23,3 +24,12 @@ def get_course_by_id(course_id: str):
 @router.get("/{course_id}/summary")
 def get_course_summary(course_id: str):
     return CourseService.get_course_summary(course_id)
+
+@router.put("/{course_id}")
+def update_course(course_id: str, course: CourseUpdateSchema):
+    return CourseService.update_course(course_id, course.model_dump())
+
+
+@router.delete("/{course_id}")
+def delete_course(course_id: str):
+    return CourseService.delete_course(course_id)

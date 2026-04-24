@@ -46,3 +46,36 @@ class CourseService:
             raise HTTPException(status_code=404, detail="Course not found")
 
         return serialize_course_summary(course)
+
+    @staticmethod
+    def update_course(course_id: str, update_data: dict) -> dict:
+        if not is_valid_object_id(course_id):
+            raise HTTPException(status_code=400, detail="Invalid course ID format")
+
+        existing_course = course_collection.find_one({"_id": ObjectId(course_id)})
+
+        if not existing_course:
+            raise HTTPException(status_code=404, detail="Course not found")
+
+        clean_data = {key: value for key, value in update_data.items() if value is not None}
+        clean_data["updated_at"] = datetime.now(timezone.utc)
+
+        course_collection.update_one(
+            {"_id": ObjectId(course_id)},
+            {"$set": clean_data}
+        )
+
+        updated_course = course_collection.find_one({"_id": ObjectId(course_id)})
+        return serialize_course(updated_course)
+
+    @staticmethod
+    def delete_course(course_id: str) -> dict:
+        if not is_valid_object_id(course_id):
+            raise HTTPException(status_code=400, detail="Invalid course ID format")
+
+        result = course_collection.delete_one({"_id": ObjectId(course_id)})
+
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Course not found")
+
+        return {"message": "Course deleted successfully", "courseId": course_id}

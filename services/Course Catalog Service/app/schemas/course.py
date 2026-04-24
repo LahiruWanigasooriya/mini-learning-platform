@@ -48,3 +48,13 @@ class CourseSummarySchema(BaseModel):
     title: str
     total_lessons: int
     active: bool
+
+class CourseUpdateSchema(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    instructor_id: Optional[str] = None
+    category: Optional[str] = None
+    tags: Optional[List[str]] = None
+    active: Optional[bool] = None
+    metadata: Optional[CourseMetadataSchema] = None
+    modules: Optional[List[ModuleSchema]] = None
