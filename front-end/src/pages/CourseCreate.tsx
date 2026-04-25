@@ -167,86 +167,76 @@ const CourseCreate: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto pb-12">
+    <div className="max-w-4xl mx-auto pb-12 animate-fade-in">
       {/* Header */}
       <div className="mb-8">
         <Link
           to="/instructor/dashboard"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-violet-600 transition-colors mb-4 group"
+          className="inline-flex items-center gap-1.5 text-sm transition-colors mb-4 group"
+          style={{ color: 'var(--text-tertiary)' }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--violet)'; }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-tertiary)'; }}
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
           Back to Dashboard
         </Link>
-        <h1 className="text-3xl font-bold text-slate-900 mb-1">Create New Course</h1>
-        <p className="text-slate-500">Fill in the details below to create your course.</p>
+        <h1 className="text-3xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>Create New Course</h1>
+        <p style={{ color: 'var(--text-secondary)' }}>Fill in the details below to create your course.</p>
       </div>
 
       {/* Alerts */}
       {error && (
-        <div className="mb-6 rounded-xl bg-red-50 p-4 border border-red-200 flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-          <p className="text-sm font-medium text-red-800">{error}</p>
+        <div className="mb-6 rounded-xl p-4 flex items-start gap-3 animate-fade-in" style={{ background: 'var(--danger-soft)', border: '1px solid var(--danger)' }}>
+          <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--danger)' }} />
+          <p className="text-sm font-medium" style={{ color: 'var(--danger)' }}>{error}</p>
         </div>
       )}
       {success && (
-        <div className="mb-6 rounded-xl bg-emerald-50 p-4 border border-emerald-200 flex items-start gap-3">
-          <CheckCircle className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-          <p className="text-sm font-medium text-emerald-800">{success}</p>
+        <div className="mb-6 rounded-xl p-4 flex items-start gap-3 animate-fade-in" style={{ background: 'var(--success-soft)', border: '1px solid var(--success)' }}>
+          <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--success)' }} />
+          <p className="text-sm font-medium" style={{ color: 'var(--success)' }}>{success}</p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* ========== SECTION 1: Basic Info ========== */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-violet-600" />
-            <h2 className="text-lg font-bold text-slate-900">Basic Information</h2>
+        <div className="glass-card overflow-hidden" style={{ cursor: 'default' }}>
+          <div className="px-6 py-4 flex items-center gap-2" style={{ borderBottom: '1px solid var(--border)' }}>
+            <BookOpen className="h-5 w-5" style={{ color: 'var(--violet)' }} />
+            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Basic Information</h2>
           </div>
           <div className="p-6 space-y-5">
-            {/* Title */}
             <div>
-              <label htmlFor="course-title" className="block text-sm font-medium text-slate-700 mb-1.5">
-                Course Title <span className="text-red-400">*</span>
+              <label htmlFor="course-title" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                Course Title <span style={{ color: 'var(--danger)' }}>*</span>
               </label>
               <input
-                id="course-title"
-                type="text"
-                value={title}
+                id="course-title" type="text" value={title}
                 onChange={e => setTitle(e.target.value)}
                 placeholder="e.g. Complete Web Development Bootcamp"
-                required
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 sm:text-sm transition-all"
+                required className="glass-input"
               />
             </div>
-
-            {/* Description */}
             <div>
-              <label htmlFor="course-desc" className="block text-sm font-medium text-slate-700 mb-1.5">
-                Description <span className="text-red-400">*</span>
+              <label htmlFor="course-desc" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                Description <span style={{ color: 'var(--danger)' }}>*</span>
               </label>
               <textarea
-                id="course-desc"
-                rows={4}
-                value={description}
+                id="course-desc" rows={4} value={description}
                 onChange={e => setDescription(e.target.value)}
                 placeholder="Describe what students will learn..."
-                required
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 sm:text-sm transition-all resize-none"
+                required className="glass-input" style={{ resize: 'none' }}
               />
             </div>
-
-            {/* Category & Tags row */}
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label htmlFor="course-category" className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Category <span className="text-red-400">*</span>
+                <label htmlFor="course-category" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                  Category <span style={{ color: 'var(--danger)' }}>*</span>
                 </label>
                 <select
-                  id="course-category"
-                  value={category}
+                  id="course-category" value={category}
                   onChange={e => setCategory(e.target.value)}
-                  required
-                  className="w-full px-4 py-2.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 sm:text-sm transition-all bg-white"
+                  required className="glass-select"
                 >
                   <option value="">Select category</option>
                   {CATEGORIES.map(cat => (
@@ -255,30 +245,26 @@ const CourseCreate: React.FC = () => {
                 </select>
               </div>
               <div>
-                <label htmlFor="course-tags" className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Tags <span className="text-slate-400 font-normal">(comma-separated)</span>
+                <label htmlFor="course-tags" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                  Tags <span className="font-normal" style={{ color: 'var(--text-tertiary)' }}>(comma-separated)</span>
                 </label>
                 <input
-                  id="course-tags"
-                  type="text"
-                  value={tags}
+                  id="course-tags" type="text" value={tags}
                   onChange={e => setTags(e.target.value)}
                   placeholder="react, typescript, frontend"
-                  className="w-full px-4 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 sm:text-sm transition-all"
+                  className="glass-input"
                 />
               </div>
             </div>
-
-            {/* Active toggle */}
             <div className="flex items-center gap-3">
               <button
-                type="button"
-                onClick={() => setActive(!active)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${active ? 'bg-violet-600' : 'bg-slate-300'}`}
+                type="button" onClick={() => setActive(!active)}
+                className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200"
+                style={{ background: active ? 'var(--violet)' : 'var(--border-strong)' }}
               >
                 <span className={`inline-block h-4 w-4 rounded-full bg-white transition-transform duration-200 ${active ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>
-              <span className="text-sm font-medium text-slate-700">
+              <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                 {active ? 'Published' : 'Draft'}
               </span>
             </div>
@@ -286,47 +272,34 @@ const CourseCreate: React.FC = () => {
         </div>
 
         {/* ========== SECTION 2: Metadata ========== */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-            <FileText className="h-5 w-5 text-violet-600" />
-            <h2 className="text-lg font-bold text-slate-900">Course Metadata</h2>
-            <span className="text-xs text-slate-400 font-normal ml-1">(optional)</span>
+        <div className="glass-card overflow-hidden" style={{ cursor: 'default' }}>
+          <div className="px-6 py-4 flex items-center gap-2" style={{ borderBottom: '1px solid var(--border)' }}>
+            <FileText className="h-5 w-5" style={{ color: 'var(--violet)' }} />
+            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Course Metadata</h2>
+            <span className="text-xs font-normal ml-1" style={{ color: 'var(--text-tertiary)' }}>(optional)</span>
           </div>
           <div className="p-6">
             <div className="grid sm:grid-cols-3 gap-5">
               <div>
-                <label htmlFor="course-level" className="block text-sm font-medium text-slate-700 mb-1.5">Level</label>
-                <select
-                  id="course-level"
-                  value={level}
-                  onChange={e => setLevel(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 sm:text-sm transition-all bg-white"
-                >
+                <label htmlFor="course-level" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>Level</label>
+                <select id="course-level" value={level} onChange={e => setLevel(e.target.value)} className="glass-select">
                   <option value="">Select level</option>
                   {LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
               </div>
               <div>
-                <label htmlFor="course-lang" className="block text-sm font-medium text-slate-700 mb-1.5">Language</label>
-                <select
-                  id="course-lang"
-                  value={language}
-                  onChange={e => setLanguage(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 sm:text-sm transition-all bg-white"
-                >
+                <label htmlFor="course-lang" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>Language</label>
+                <select id="course-lang" value={language} onChange={e => setLanguage(e.target.value)} className="glass-select">
                   <option value="">Select language</option>
                   {LANGUAGES.map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
               </div>
               <div>
-                <label htmlFor="course-duration" className="block text-sm font-medium text-slate-700 mb-1.5">Est. Duration</label>
+                <label htmlFor="course-duration" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>Est. Duration</label>
                 <input
-                  id="course-duration"
-                  type="text"
-                  value={estimatedDuration}
+                  id="course-duration" type="text" value={estimatedDuration}
                   onChange={e => setEstimatedDuration(e.target.value)}
-                  placeholder="e.g. 40 hours"
-                  className="w-full px-4 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 sm:text-sm transition-all"
+                  placeholder="e.g. 40 hours" className="glass-input"
                 />
               </div>
             </div>
@@ -334,17 +307,19 @@ const CourseCreate: React.FC = () => {
         </div>
 
         {/* ========== SECTION 3: Modules & Lessons ========== */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="glass-card overflow-hidden" style={{ cursor: 'default' }}>
+          <div className="px-6 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid var(--border)' }}>
             <div className="flex items-center gap-2">
-              <Layers className="h-5 w-5 text-violet-600" />
-              <h2 className="text-lg font-bold text-slate-900">Modules & Lessons</h2>
-              <span className="text-xs text-slate-400 font-normal ml-1">({modules.length} modules)</span>
+              <Layers className="h-5 w-5" style={{ color: 'var(--violet)' }} />
+              <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Modules & Lessons</h2>
+              <span className="text-xs font-normal ml-1" style={{ color: 'var(--text-tertiary)' }}>({modules.length} modules)</span>
             </div>
             <button
-              type="button"
-              onClick={addModule}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-200 rounded-lg transition-colors"
+              type="button" onClick={addModule}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold rounded-lg transition-colors"
+              style={{ color: 'var(--violet)', background: 'var(--violet-soft)', border: '1px solid transparent' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--violet)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; }}
             >
               <Plus className="h-4 w-4" />
               Add Module
@@ -353,75 +328,72 @@ const CourseCreate: React.FC = () => {
 
           <div className="p-6">
             {modules.length === 0 ? (
-              <div className="text-center py-12 text-slate-400">
-                <Layers className="mx-auto h-10 w-10 mb-3 text-slate-300" />
+              <div className="text-center py-12" style={{ color: 'var(--text-tertiary)' }}>
+                <Layers className="mx-auto h-10 w-10 mb-3" />
                 <p className="font-medium">No modules yet</p>
                 <p className="text-sm mt-1">Click "Add Module" to build your course structure.</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {modules.map((mod, modIndex) => (
-                  <div key={mod.module_id} className="border border-slate-200 rounded-xl overflow-hidden">
-                    {/* Module Header */}
+                  <div key={mod.module_id} className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
                     <div
-                      className="flex items-center gap-3 px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors"
+                      style={{ background: 'var(--bg-tertiary)' }}
                       onClick={() => toggleModule(mod.module_id)}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-soft)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-tertiary)'; }}
                     >
-                      <GripVertical className="h-4 w-4 text-slate-400 flex-shrink-0" />
-                      <span className="text-xs font-bold text-violet-600 bg-violet-100 px-2 py-0.5 rounded">
+                      <GripVertical className="h-4 w-4 flex-shrink-0" style={{ color: 'var(--text-tertiary)' }} />
+                      <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ color: 'var(--violet)', background: 'var(--violet-soft)' }}>
                         M{modIndex + 1}
                       </span>
-                      <span className="flex-1 font-semibold text-slate-800 truncate">
+                      <span className="flex-1 font-semibold truncate" style={{ color: 'var(--text-primary)' }}>
                         {mod.title || 'Untitled Module'}
                       </span>
-                      <span className="text-xs text-slate-400">{mod.lessons.length} lessons</span>
+                      <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{mod.lessons.length} lessons</span>
                       <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); removeModule(mod.module_id); }}
-                        className="p-1 text-slate-400 hover:text-red-500 transition-colors"
+                        className="p-1 transition-colors"
+                        style={{ color: 'var(--text-tertiary)' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--danger)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-tertiary)'; }}
                         title="Remove module"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
                       {expandedModules.has(mod.module_id)
-                        ? <ChevronUp className="h-4 w-4 text-slate-400" />
-                        : <ChevronDown className="h-4 w-4 text-slate-400" />}
+                        ? <ChevronUp className="h-4 w-4" style={{ color: 'var(--text-tertiary)' }} />
+                        : <ChevronDown className="h-4 w-4" style={{ color: 'var(--text-tertiary)' }} />}
                     </div>
 
-                    {/* Module Body */}
                     {expandedModules.has(mod.module_id) && (
-                      <div className="p-4 space-y-4 border-t border-slate-200">
+                      <div className="p-4 space-y-4" style={{ borderTop: '1px solid var(--border)' }}>
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Module Title</label>
-                            <input
-                              type="text"
-                              value={mod.title}
+                            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Module Title</label>
+                            <input type="text" value={mod.title}
                               onChange={e => updateModule(mod.module_id, 'title', e.target.value)}
-                              placeholder="e.g. Getting Started"
-                              className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 text-sm transition-all"
+                              placeholder="e.g. Getting Started" className="glass-input"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
-                            <input
-                              type="text"
-                              value={mod.description || ''}
+                            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Description</label>
+                            <input type="text" value={mod.description || ''}
                               onChange={e => updateModule(mod.module_id, 'description', e.target.value)}
-                              placeholder="Brief description..."
-                              className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 text-sm transition-all"
+                              placeholder="Brief description..." className="glass-input"
                             />
                           </div>
                         </div>
 
-                        {/* Lessons */}
                         <div className="mt-3">
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-semibold text-slate-700">Lessons</span>
+                            <span className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>Lessons</span>
                             <button
-                              type="button"
-                              onClick={() => addLesson(mod.module_id)}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-200 rounded-md transition-colors"
+                              type="button" onClick={() => addLesson(mod.module_id)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md transition-colors"
+                              style={{ color: 'var(--violet)', background: 'var(--violet-soft)' }}
                             >
                               <Plus className="h-3 w-3" />
                               Add Lesson
@@ -429,33 +401,31 @@ const CourseCreate: React.FC = () => {
                           </div>
 
                           {mod.lessons.length === 0 ? (
-                            <p className="text-sm text-slate-400 text-center py-4">No lessons in this module yet.</p>
+                            <p className="text-sm text-center py-4" style={{ color: 'var(--text-tertiary)' }}>No lessons in this module yet.</p>
                           ) : (
                             <div className="space-y-3">
                               {mod.lessons.map((lesson, lessonIndex) => (
-                                <div key={lesson.lesson_id} className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                <div key={lesson.lesson_id} className="p-3 rounded-lg" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border)' }}>
                                   <div className="flex items-center justify-between mb-2">
-                                    <span className="text-xs font-bold text-slate-500">Lesson {lessonIndex + 1}</span>
-                                    <button
-                                      type="button"
+                                    <span className="text-xs font-bold" style={{ color: 'var(--text-tertiary)' }}>Lesson {lessonIndex + 1}</span>
+                                    <button type="button"
                                       onClick={() => removeLesson(mod.module_id, lesson.lesson_id)}
-                                      className="p-1 text-slate-400 hover:text-red-500 transition-colors"
+                                      className="p-1 transition-colors"
+                                      style={{ color: 'var(--text-tertiary)' }}
+                                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--danger)'; }}
+                                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-tertiary)'; }}
                                     >
                                       <Trash2 className="h-3.5 w-3.5" />
                                     </button>
                                   </div>
                                   <div className="grid sm:grid-cols-2 gap-3">
-                                    <input
-                                      type="text"
-                                      value={lesson.title}
+                                    <input type="text" value={lesson.title}
                                       onChange={e => updateLesson(mod.module_id, lesson.lesson_id, 'title', e.target.value)}
-                                      placeholder="Lesson title"
-                                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all"
+                                      placeholder="Lesson title" className="glass-input"
                                     />
-                                    <select
-                                      value={lesson.content_type}
+                                    <select value={lesson.content_type}
                                       onChange={e => updateLesson(mod.module_id, lesson.lesson_id, 'content_type', e.target.value)}
-                                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all bg-white"
+                                      className="glass-select"
                                     >
                                       {CONTENT_TYPES.map(ct => (
                                         <option key={ct} value={ct}>{ct.charAt(0).toUpperCase() + ct.slice(1)}</option>
@@ -463,21 +433,16 @@ const CourseCreate: React.FC = () => {
                                     </select>
                                   </div>
                                   {lesson.content_type === 'video' && (
-                                    <input
-                                      type="url"
-                                      value={lesson.video_url || ''}
+                                    <input type="url" value={lesson.video_url || ''}
                                       onChange={e => updateLesson(mod.module_id, lesson.lesson_id, 'video_url', e.target.value)}
-                                      placeholder="Video URL"
-                                      className="mt-2 w-full px-3 py-2 border border-slate-300 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all"
+                                      placeholder="Video URL" className="glass-input mt-2"
                                     />
                                   )}
                                   {lesson.content_type === 'text' && (
-                                    <textarea
-                                      value={lesson.text_content || ''}
+                                    <textarea value={lesson.text_content || ''}
                                       onChange={e => updateLesson(mod.module_id, lesson.lesson_id, 'text_content', e.target.value)}
-                                      placeholder="Lesson text content..."
-                                      rows={3}
-                                      className="mt-2 w-full px-3 py-2 border border-slate-300 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all resize-none"
+                                      placeholder="Lesson text content..." rows={3}
+                                      className="glass-input mt-2" style={{ resize: 'none' }}
                                     />
                                   )}
                                 </div>
@@ -496,17 +461,13 @@ const CourseCreate: React.FC = () => {
 
         {/* ========== Submit Buttons ========== */}
         <div className="flex items-center justify-end gap-3 pt-2">
-          <Link
-            to="/instructor/dashboard"
-            className="px-5 py-2.5 border border-slate-300 text-slate-700 rounded-xl font-semibold text-sm hover:bg-slate-50 transition-colors"
-          >
+          <Link to="/instructor/dashboard" className="btn-ghost">
             Cancel
           </Link>
           <button
-            type="submit"
-            disabled={loading}
+            type="submit" disabled={loading}
             id="create-course-submit"
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white rounded-xl font-semibold text-sm shadow-md shadow-violet-500/20 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-violet"
           >
             <Save className="h-4 w-4" />
             {loading ? 'Creating...' : 'Create Course'}

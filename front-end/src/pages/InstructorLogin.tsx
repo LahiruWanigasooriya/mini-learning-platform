@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { loginUser } from '../api/services';
 import { Users, AlertCircle, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 const InstructorLogin: React.FC = () => {
@@ -32,12 +31,15 @@ const InstructorLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-[85vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8 animate-fade-in">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Back button */}
         <Link
           to="/login"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-violet-600 transition-colors mb-8 group"
+          className="inline-flex items-center gap-1.5 text-sm transition-colors mb-8 group"
+          style={{ color: 'var(--text-tertiary)' }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--violet)'; }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-tertiary)'; }}
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
           Back to role selection
@@ -45,23 +47,26 @@ const InstructorLogin: React.FC = () => {
 
         {/* Header */}
         <div className="flex justify-center">
-          <div className="p-3 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-2xl shadow-lg shadow-violet-500/25">
+          <div
+            className="p-3 rounded-2xl"
+            style={{ background: 'var(--violet-gradient)', boxShadow: '0 8px 24px rgba(124,58,237,0.2)' }}
+          >
             <Users className="h-10 w-10 text-white" />
           </div>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight" style={{ color: 'var(--text-primary)' }}>
           Instructor Sign In
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-500">
+        <p className="mt-2 text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
           Manage your courses and track student progress
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-xl sm:rounded-2xl sm:px-10 border border-slate-100">
+        <div className="glass-card py-8 px-6 sm:px-10">
           {/* Instructor badge */}
           <div className="flex items-center justify-center mb-6">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200">
+            <span className="badge badge-violet">
               <Users className="h-3.5 w-3.5" />
               Instructor Portal
             </span>
@@ -69,16 +74,16 @@ const InstructorLogin: React.FC = () => {
 
           <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
-              <div className="rounded-xl bg-red-50 p-4 border border-red-200 animate-in fade-in duration-300">
+              <div className="rounded-xl p-4 animate-fade-in" style={{ background: 'var(--danger-soft)', border: '1px solid var(--danger)' }}>
                 <div className="flex">
-                  <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
-                  <p className="ml-3 text-sm font-medium text-red-800">{error}</p>
+                  <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--danger)' }} />
+                  <p className="ml-3 text-sm font-medium" style={{ color: 'var(--danger)' }}>{error}</p>
                 </div>
               </div>
             )}
 
             <div>
-              <label htmlFor="instructor-email" className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label htmlFor="instructor-email" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
                 Email address
               </label>
               <input
@@ -90,12 +95,12 @@ const InstructorLogin: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@institution.edu"
-                className="appearance-none block w-full px-4 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 sm:text-sm transition-all"
+                className="glass-input"
               />
             </div>
 
             <div>
-              <label htmlFor="instructor-password" className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label htmlFor="instructor-password" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
                 Password
               </label>
               <div className="relative">
@@ -108,12 +113,14 @@ const InstructorLogin: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="appearance-none block w-full px-4 py-2.5 pr-10 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 sm:text-sm transition-all"
+                  className="glass-input"
+                  style={{ paddingRight: '2.5rem' }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center transition-colors"
+                  style={{ color: 'var(--text-tertiary)' }}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -126,13 +133,14 @@ const InstructorLogin: React.FC = () => {
                   id="instructor-remember"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-violet-600 focus:ring-violet-500 border-slate-300 rounded cursor-pointer"
+                  className="h-4 w-4 rounded cursor-pointer"
+                  style={{ accentColor: 'var(--violet)' }}
                 />
-                <label htmlFor="instructor-remember" className="ml-2 block text-sm text-slate-600 cursor-pointer">
+                <label htmlFor="instructor-remember" className="ml-2 block text-sm cursor-pointer" style={{ color: 'var(--text-secondary)' }}>
                   Remember me
                 </label>
               </div>
-              <a href="#" className="text-sm font-medium text-violet-600 hover:text-violet-500 transition-colors">
+              <a href="#" className="text-sm font-medium transition-colors" style={{ color: 'var(--violet)' }}>
                 Forgot password?
               </a>
             </div>
@@ -141,11 +149,11 @@ const InstructorLogin: React.FC = () => {
               type="submit"
               disabled={loading}
               id="instructor-login-submit"
-              className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+              className="btn-violet w-full py-3"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <svg className="animate-spin-slow h-4 w-4" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
@@ -158,9 +166,9 @@ const InstructorLogin: React.FC = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               Don't have an account?{' '}
-              <Link to="/register" className="font-semibold text-violet-600 hover:text-violet-500 transition-colors">
+              <Link to="/register" className="font-semibold transition-colors" style={{ color: 'var(--violet)' }}>
                 Register Now
               </Link>
             </p>

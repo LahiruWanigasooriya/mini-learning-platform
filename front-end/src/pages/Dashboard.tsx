@@ -135,108 +135,82 @@ const Dashboard: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3">
-          <svg className="animate-spin h-8 w-8 text-brand-600" viewBox="0 0 24 24">
+          <svg className="animate-spin-slow h-8 w-8" style={{ color: 'var(--accent)' }} viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          <p className="text-slate-500 font-medium">Loading your learning dashboard...</p>
+          <p className="font-medium" style={{ color: 'var(--text-tertiary)' }}>Loading your learning dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-fade-in">
       {/* Welcome Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-1">
+          <h1 className="text-3xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
             Welcome back, {user?.firstName || 'Student'} 👋
           </h1>
-          <p className="text-slate-500">Here's your learning progress at a glance.</p>
+          <p style={{ color: 'var(--text-secondary)' }}>Here's your learning progress at a glance.</p>
         </div>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-brand-600 to-cyan-600 hover:from-brand-700 hover:to-cyan-700 text-white rounded-xl font-semibold text-sm shadow-md shadow-brand-500/20 transition-all duration-200 hover:shadow-lg cursor-pointer"
-        >
+        <Link to="/" className="btn-primary">
           <Sparkles className="h-4 w-4" />
           Explore Courses
         </Link>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow cursor-default group">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-slate-500">Enrolled</span>
-            <div className="p-2 rounded-lg bg-brand-50 group-hover:bg-brand-100 transition-colors">
-              <BookOpen className="h-5 w-5 text-brand-600" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
+        {[
+          { label: 'Enrolled', value: enrollments.length, sub: `${activeCourses.length} in progress`, icon: <BookOpen className="h-5 w-5" />, color: 'var(--accent)', soft: 'var(--accent-soft)' },
+          { label: 'Completed', value: completedCourses.length, sub: completedCourses.length > 0 ? '🎉 Great work!' : 'Keep going!', icon: <Award className="h-5 w-5" />, color: 'var(--success)', soft: 'var(--success-soft)' },
+          { label: 'Lessons Done', value: totalLessonsCompleted, sub: 'total lessons completed', icon: <CheckCircle2 className="h-5 w-5" />, color: 'var(--violet)', soft: 'var(--violet-soft)' },
+          { label: 'Avg. Progress', value: `${avgProgress}%`, sub: null, icon: <BarChart3 className="h-5 w-5" />, color: 'var(--warning)', soft: 'var(--warning-soft)', progress: avgProgress },
+        ].map((stat, i) => (
+          <div key={i} className="glass-card p-5 animate-fade-in" style={{ cursor: 'default' }}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{stat.label}</span>
+              <div className="p-2 rounded-lg transition-colors" style={{ background: stat.soft, color: stat.color }}>
+                {stat.icon}
+              </div>
             </div>
+            <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{stat.value}</p>
+            {stat.sub && <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>{stat.sub}</p>}
+            {stat.progress !== undefined && (
+              <div className="mt-2 w-full rounded-full h-1.5 overflow-hidden" style={{ background: 'var(--border)' }}>
+                <div
+                  className="h-1.5 rounded-full transition-all duration-1000"
+                  style={{ width: `${stat.progress}%`, background: stat.color }}
+                />
+              </div>
+            )}
           </div>
-          <p className="text-2xl font-bold text-slate-900">{enrollments.length}</p>
-          <p className="text-xs text-slate-400 mt-1">{activeCourses.length} in progress</p>
-        </div>
-
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow cursor-default group">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-slate-500">Completed</span>
-            <div className="p-2 rounded-lg bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
-              <Award className="h-5 w-5 text-emerald-600" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-slate-900">{completedCourses.length}</p>
-          <p className="text-xs text-emerald-500 mt-1 font-medium">
-            {completedCourses.length > 0 ? '🎉 Great work!' : 'Keep going!'}
-          </p>
-        </div>
-
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow cursor-default group">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-slate-500">Lessons Done</span>
-            <div className="p-2 rounded-lg bg-violet-50 group-hover:bg-violet-100 transition-colors">
-              <CheckCircle2 className="h-5 w-5 text-violet-600" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-slate-900">{totalLessonsCompleted}</p>
-          <p className="text-xs text-slate-400 mt-1">total lessons completed</p>
-        </div>
-
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow cursor-default group">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-slate-500">Avg. Progress</span>
-            <div className="p-2 rounded-lg bg-amber-50 group-hover:bg-amber-100 transition-colors">
-              <BarChart3 className="h-5 w-5 text-amber-600" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-slate-900">{avgProgress}%</p>
-          <div className="mt-2 w-full bg-slate-200 rounded-full h-1.5">
-            <div
-              className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000"
-              style={{ width: `${avgProgress}%` }}
-            />
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1 w-fit">
+      <div className="flex items-center gap-1 p-1 rounded-xl w-fit glass" style={{ cursor: 'default' }}>
         <button
           onClick={() => setActiveTab('enrolled')}
-          className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
-            activeTab === 'enrolled'
-              ? 'bg-white text-slate-900 shadow-sm'
-              : 'text-slate-500 hover:text-slate-700'
-          }`}
+          className="px-5 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer"
+          style={{
+            background: activeTab === 'enrolled' ? 'var(--accent-gradient)' : 'transparent',
+            color: activeTab === 'enrolled' ? '#ffffff' : 'var(--text-secondary)',
+            boxShadow: activeTab === 'enrolled' ? '0 2px 8px rgba(30,58,138,0.15)' : 'none',
+          }}
         >
           My Courses ({enrollments.length})
         </button>
         <button
           onClick={() => setActiveTab('browse')}
-          className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
-            activeTab === 'browse'
-              ? 'bg-white text-slate-900 shadow-sm'
-              : 'text-slate-500 hover:text-slate-700'
-          }`}
+          className="px-5 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer"
+          style={{
+            background: activeTab === 'browse' ? 'var(--accent-gradient)' : 'transparent',
+            color: activeTab === 'browse' ? '#ffffff' : 'var(--text-secondary)',
+            boxShadow: activeTab === 'browse' ? '0 2px 8px rgba(30,58,138,0.15)' : 'none',
+          }}
         >
           Browse New ({browseCourses.length})
         </button>
@@ -246,38 +220,42 @@ const Dashboard: React.FC = () => {
       {activeTab === 'enrolled' && (
         <div>
           {enrollments.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm">
-              <BookOpen className="mx-auto h-12 w-12 text-slate-300 mb-4" />
-              <h3 className="text-lg font-medium text-slate-900 mb-2">You aren't enrolled in any courses yet</h3>
-              <p className="text-slate-500 mb-6">Explore our catalog and start learning today!</p>
-              <Link
-                to="/"
-                className="inline-block bg-brand-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-brand-700 transition-colors cursor-pointer"
-              >
+            <div className="text-center py-16 glass-card" style={{ cursor: 'default' }}>
+              <BookOpen className="mx-auto h-12 w-12 mb-4" style={{ color: 'var(--text-tertiary)' }} />
+              <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text-primary)' }}>You aren't enrolled in any courses yet</h3>
+              <p className="mb-6" style={{ color: 'var(--text-secondary)' }}>Explore our catalog and start learning today!</p>
+              <Link to="/" className="btn-primary">
                 Browse Courses
               </Link>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4 stagger-children">
               {/* Active courses first, then completed */}
               {[...activeCourses, ...completedCourses].map((enrollment) => (
                 <Link
                   key={enrollment.enrollmentId}
                   to={`/course/${enrollment.courseId}`}
-                  className="block bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:border-brand-200 group cursor-pointer"
+                  className="block glass-card overflow-hidden group cursor-pointer animate-fade-in"
+                  style={{ textDecoration: 'none' }}
                 >
                   <div className="flex flex-col sm:flex-row">
                     {/* Course thumbnail area */}
-                    <div className="sm:w-56 aspect-video sm:aspect-auto bg-gradient-to-br from-slate-100 to-slate-200 relative flex-shrink-0 flex items-center justify-center overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-brand-600/10 to-cyan-600/10 group-hover:from-brand-600/20 group-hover:to-cyan-600/20 transition-colors" />
-                      <Layers className="h-10 w-10 text-slate-400 group-hover:text-brand-500 transition-colors relative z-10" />
+                    <div
+                      className="sm:w-56 aspect-video sm:aspect-auto relative flex-shrink-0 flex items-center justify-center overflow-hidden"
+                      style={{ background: 'var(--bg-tertiary)' }}
+                    >
+                      <div
+                        className="absolute inset-0 transition-opacity duration-300 opacity-30 group-hover:opacity-50"
+                        style={{ background: 'var(--accent-gradient)' }}
+                      />
+                      <Layers className="h-10 w-10 transition-colors relative z-10" style={{ color: 'var(--text-tertiary)' }} />
                       {/* Play overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'rgba(0,0,0,0.2)' }}>
                         <PlayCircle className="h-12 w-12 text-white drop-shadow-lg" />
                       </div>
                       {/* Status badge */}
                       {enrollment.status === 'COMPLETED' && (
-                        <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 rounded-md bg-emerald-500 text-white text-xs font-bold">
+                        <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold text-white" style={{ background: 'var(--success)' }}>
                           <CheckCircle2 className="h-3 w-3" />
                           Completed
                         </div>
@@ -288,18 +266,16 @@ const Dashboard: React.FC = () => {
                     <div className="flex-1 p-5 flex flex-col justify-between">
                       <div>
                         <div className="flex items-start justify-between mb-1">
-                          <h3 className="font-bold text-lg text-slate-900 group-hover:text-brand-700 transition-colors line-clamp-1">
+                          <h3 className="font-bold text-lg transition-colors line-clamp-1" style={{ color: 'var(--text-primary)' }}>
                             {enrollment.title}
                           </h3>
-                          <ChevronRight className="h-5 w-5 text-slate-300 group-hover:text-brand-500 group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-0.5" />
+                          <ChevronRight className="h-5 w-5 group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
                         </div>
-                        <p className="text-sm text-slate-500 line-clamp-1 mb-3">{enrollment.description}</p>
+                        <p className="text-sm line-clamp-1 mb-3" style={{ color: 'var(--text-secondary)' }}>{enrollment.description}</p>
 
-                        <div className="flex items-center gap-4 text-xs text-slate-400 mb-4">
+                        <div className="flex items-center gap-4 text-xs mb-4" style={{ color: 'var(--text-tertiary)' }}>
                           {enrollment.category && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium">
-                              {enrollment.category}
-                            </span>
+                            <span className="badge badge-accent">{enrollment.category}</span>
                           )}
                           <span className="inline-flex items-center gap-1">
                             <Layers className="h-3.5 w-3.5" />
@@ -315,24 +291,25 @@ const Dashboard: React.FC = () => {
                       {/* Progress bar */}
                       <div>
                         <div className="flex justify-between items-center text-sm mb-1.5">
-                          <span className="font-semibold text-slate-700">{enrollment.progressPercentage}% Complete</span>
+                          <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{enrollment.progressPercentage}% Complete</span>
                           {enrollment.status === 'ACTIVE' && enrollment.progressPercentage > 0 && (
-                            <span className="text-xs text-brand-600 font-medium flex items-center gap-1">
+                            <span className="text-xs font-medium flex items-center gap-1" style={{ color: 'var(--accent)' }}>
                               <TrendingUp className="h-3 w-3" />
                               In Progress
                             </span>
                           )}
                         </div>
-                        <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                        <div className="w-full rounded-full h-2.5 overflow-hidden" style={{ background: 'var(--border)' }}>
                           <div
-                            className={`h-2.5 rounded-full transition-all duration-1000 ${
-                              enrollment.progressPercentage >= 100
-                                ? 'bg-gradient-to-r from-emerald-500 to-emerald-400'
+                            className="h-2.5 rounded-full transition-all duration-1000"
+                            style={{
+                              width: `${enrollment.progressPercentage}%`,
+                              background: enrollment.progressPercentage >= 100
+                                ? 'var(--success)'
                                 : enrollment.progressPercentage >= 50
-                                  ? 'bg-gradient-to-r from-brand-600 to-cyan-500'
-                                  : 'bg-gradient-to-r from-amber-500 to-amber-400'
-                            }`}
-                            style={{ width: `${enrollment.progressPercentage}%` }}
+                                  ? 'var(--accent-gradient)'
+                                  : 'var(--warning)',
+                            }}
                           />
                         </div>
                       </div>
@@ -351,29 +328,30 @@ const Dashboard: React.FC = () => {
           {/* Search bar */}
           <div className="relative mb-6 max-w-md">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <Search className="h-4 w-4 text-slate-400" />
+              <Search className="h-4 w-4" style={{ color: 'var(--text-tertiary)' }} />
             </div>
             <input
               type="text"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               placeholder="Search courses..."
-              className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all"
+              className="glass-input"
+              style={{ paddingLeft: '2.5rem' }}
             />
           </div>
 
           {filteredBrowse.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm">
-              <GraduationCap className="mx-auto h-12 w-12 text-slate-300 mb-4" />
-              <h3 className="text-lg font-medium text-slate-900 mb-2">
+            <div className="text-center py-16 glass-card" style={{ cursor: 'default' }}>
+              <GraduationCap className="mx-auto h-12 w-12 mb-4" style={{ color: 'var(--text-tertiary)' }} />
+              <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                 {searchTerm ? 'No courses found' : "You've explored everything!"}
               </h3>
-              <p className="text-slate-500">
+              <p style={{ color: 'var(--text-secondary)' }}>
                 {searchTerm ? 'Try a different search term.' : 'Check back later for new courses.'}
               </p>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 stagger-children">
               {filteredBrowse.map((course: any) => {
                 const cid = course.courseId || course.id;
                 const lessonCount = (course.modules || []).reduce(
@@ -383,13 +361,20 @@ const Dashboard: React.FC = () => {
                   <Link
                     key={cid}
                     to={`/course/${cid}`}
-                    className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:border-brand-200 hover:-translate-y-1 group cursor-pointer"
+                    className="glass-card overflow-hidden hover:-translate-y-1 group cursor-pointer animate-fade-in"
+                    style={{ textDecoration: 'none' }}
                   >
                     {/* Thumbnail */}
-                    <div className="aspect-video bg-gradient-to-br from-slate-100 to-slate-200 relative flex items-center justify-center overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-brand-600/5 to-cyan-600/5 group-hover:from-brand-600/15 group-hover:to-cyan-600/15 transition-colors" />
-                      <BookOpen className="h-10 w-10 text-slate-300 group-hover:text-brand-400 transition-colors relative z-10" />
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
+                    <div
+                      className="aspect-video relative flex items-center justify-center overflow-hidden"
+                      style={{ background: 'var(--bg-tertiary)' }}
+                    >
+                      <div
+                        className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity"
+                        style={{ background: 'var(--accent-gradient)' }}
+                      />
+                      <BookOpen className="h-10 w-10 transition-colors relative z-10" style={{ color: 'var(--text-tertiary)' }} />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'rgba(0,0,0,0.2)' }}>
                         <PlayCircle className="h-12 w-12 text-white drop-shadow-lg" />
                       </div>
                     </div>
@@ -398,22 +383,20 @@ const Dashboard: React.FC = () => {
                     <div className="p-5">
                       <div className="flex items-center gap-2 mb-2">
                         {course.category && (
-                          <span className="text-xs font-medium text-brand-600 bg-brand-50 px-2 py-0.5 rounded-md">
-                            {course.category}
-                          </span>
+                          <span className="badge badge-accent text-xs">{course.category}</span>
                         )}
                       </div>
-                      <h3 className="font-bold text-slate-900 group-hover:text-brand-700 transition-colors mb-1 line-clamp-2">
+                      <h3 className="font-bold transition-colors mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
                         {course.title}
                       </h3>
-                      <p className="text-sm text-slate-500 line-clamp-2 mb-3">{course.description}</p>
+                      <p className="text-sm line-clamp-2 mb-3" style={{ color: 'var(--text-secondary)' }}>{course.description}</p>
 
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-slate-400 flex items-center gap-1">
+                        <span className="text-xs flex items-center gap-1" style={{ color: 'var(--text-tertiary)' }}>
                           <Layers className="h-3.5 w-3.5" />
                           {lessonCount} lessons
                         </span>
-                        <span className="text-sm font-semibold text-brand-600 flex items-center gap-1 group-hover:gap-2 transition-all cursor-pointer">
+                        <span className="text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all cursor-pointer" style={{ color: 'var(--accent)' }}>
                           Enroll
                           <ChevronRight className="h-4 w-4" />
                         </span>
@@ -423,7 +406,7 @@ const Dashboard: React.FC = () => {
                       {(course.tags || []).length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mt-3">
                           {(course.tags as string[]).slice(0, 3).map((tag: string) => (
-                            <span key={tag} className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+                            <span key={tag} className="text-xs px-2 py-0.5 rounded" style={{ color: 'var(--text-tertiary)', background: 'var(--bg-tertiary)' }}>
                               {tag}
                             </span>
                           ))}
