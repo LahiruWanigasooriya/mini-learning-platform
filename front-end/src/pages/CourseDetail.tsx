@@ -61,7 +61,7 @@ const CourseDetail: React.FC = () => {
   );
 
   return (
-    <div className="max-w-5xl mx-auto animate-fade-in">
+    <div className="max-w-[1800px] mx-auto animate-fade-in">
       {/* Header Banner */}
       <div
         className="rounded-3xl p-8 md:p-12 text-white mb-12 relative overflow-hidden"
