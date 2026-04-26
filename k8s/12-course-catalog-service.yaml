@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: course-catalog-service
+  namespace: mini-lms
+spec:
+  selector:
+    app: course-catalog-service
+  ports:
+    - name: http
+      port: 8083
+      targetPort: 8083
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: course-catalog-service
+  namespace: mini-lms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: course-catalog-service
+  template:
+    metadata:
+      labels:
+        app: course-catalog-service
+    spec:
+      containers:
+        - name: course-catalog-service
+          image: REPLACE_ME/course-catalog-service:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8083
+              name: http
+          env:
+            - name: MONGO_URI
+              value: mongodb://course-mongo:27017
+            - name: DATABASE_NAME
+              value: course_catalog_db
+            - name: COURSE_COLLECTION
+              value: courses
