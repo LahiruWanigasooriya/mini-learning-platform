@@ -4,7 +4,8 @@ services:
     container_name: mysql-db
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: auth_db
+    volumes:
+      - ./docker-init/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
       interval: 10s
@@ -54,6 +55,7 @@ services:
     depends_on:
       - auth-service
       - enrollment-service
+      - course-catalog-service
 
   course-mongo:
     image: mongo:7
@@ -80,6 +82,26 @@ services:
       course-mongo:
         condition: service_healthy
 
+  notification-service:
+    build: "./services/Notification Service"
+    container_name: notification-service
+    ports:
+      - "8084:8084"
+    environment:
+      - PORT=8084
+      - DATABASE_URL=mysql://root:root@mysql-db:3306/notification_db
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+  front-end:
+    build: ./front-end
+    container_name: front-end
+    ports:
+      - "5173:80"
+    depends_on:
+      - api-gateway
+
 volumes:
   enrollment_postgres_data:
-  course_mongo_data:
+  course_mongo_data:
