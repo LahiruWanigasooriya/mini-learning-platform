@@ -103,19 +103,13 @@ services:
     build: "./services/Notification Service"
     container_name: notification-service
     ports:
-      - "8085:8085"
+      - "8084:8084"
     environment:
-      DATABASE_URL: mysql://root:root@notification-mysql:3306/notification_db
+      - PORT=8084
+      - DATABASE_URL=mysql://root:root@mysql-db:3306/notification_db
     depends_on:
-      notification-mysql:
+      mysql-db:
         condition: service_healthy
-    command: >
-      sh -c "
-      echo 'Waiting for notification MySQL...' &&
-      sleep 20 &&
-      npx prisma db push &&
-      npm run dev
-      "
 
 volumes:
   enrollment_postgres_data:
