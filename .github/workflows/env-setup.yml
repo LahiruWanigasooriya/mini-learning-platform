@@ -1,4 +1,4 @@
-name: Setup AWS EKS Environment
+name: Setup AWS EKS Environment_
 
 on:
   workflow_dispatch:
