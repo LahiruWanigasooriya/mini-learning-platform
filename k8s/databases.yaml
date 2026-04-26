@@ -1,0 +1,113 @@
+# MySQL Database
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-db
+  namespace: mini-learning-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-db
+  template:
+    metadata:
+      labels:
+        app: mysql-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "root"
+        ports:
+        - containerPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-db
+  namespace: mini-learning-platform
+spec:
+  selector:
+    app: mysql-db
+  ports:
+  - port: 3306
+    targetPort: 3306
+
+---
+# PostgreSQL Database
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enrollment-postgres
+  namespace: mini-learning-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: enrollment-postgres
+  template:
+    metadata:
+      labels:
+        app: enrollment-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16
+        env:
+        - name: POSTGRES_DB
+          value: "enrollment_db"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "postgres"
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: enrollment-postgres
+  namespace: mini-learning-platform
+spec:
+  selector:
+    app: enrollment-postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+
+---
+# MongoDB Database
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: course-mongo
+  namespace: mini-learning-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: course-mongo
+  template:
+    metadata:
+      labels:
+        app: course-mongo
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:7
+        ports:
+        - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: course-mongo
+  namespace: mini-learning-platform
+spec:
+  selector:
+    app: course-mongo
+  ports:
+  - port: 27017
+    targetPort: 27017

@@ -1,35 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway
+  name: front-end
   namespace: mini-learning-platform
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api-gateway
+      app: front-end
   template:
     metadata:
       labels:
-        app: api-gateway
+        app: front-end
     spec:
       containers:
-      - name: api-gateway
-        image: senura2001/api-gateway:latest
+      - name: front-end
+        image: senura2001/front-end:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 80
       imagePullSecrets:
       - name: regcred
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-gateway
+  name: front-end
   namespace: mini-learning-platform
 spec:
   type: LoadBalancer
   selector:
-    app: api-gateway
+    app: front-end
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 80
+    targetPort: 80

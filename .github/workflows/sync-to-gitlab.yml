@@ -1,0 +1,24 @@
+name: Sync GitHub to GitLab
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-to-gitlab:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GitHub repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to GitLab
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          git remote add gitlab https://oauth2:${{ secrets.GITLAB }}@gitlab.com/koshala19299-group/mini-learning-platform-cloud-project.git
+          git push gitlab main --force

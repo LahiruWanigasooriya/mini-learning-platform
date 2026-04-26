@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: mini-learning-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+      - name: notification-service
+        image: senura2001/notification-service:latest
+        ports:
+        - containerPort: 8084
+        env:
+        - name: PORT
+          value: "8084"
+        - name: DATABASE_URL
+          value: "mysql://root:root@mysql-db:3306/notification_db"
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  namespace: mini-learning-platform
+spec:
+  selector:
+    app: notification-service
+  ports:
+  - port: 8084
+    targetPort: 8084

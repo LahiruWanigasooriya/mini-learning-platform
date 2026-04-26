@@ -82,23 +82,6 @@ services:
       course-mongo:
         condition: service_healthy
   
-  
-  notification-mysql:
-    image: mysql:8.0
-    container_name: notification-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: notification_db
-    volumes:
-      - notification_mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
-
-
   notification-service:
     build: "./services/Notification Service"
     container_name: notification-service
@@ -110,8 +93,15 @@ services:
     depends_on:
       mysql-db:
         condition: service_healthy
+  
+  front-end:
+    build: ./front-end
+    container_name: front-end
+    ports:
+      - "5173:80"
+    depends_on:
+      - api-gateway
 
 volumes:
   enrollment_postgres_data:
   course_mongo_data:
-  notification_mysql_data:
