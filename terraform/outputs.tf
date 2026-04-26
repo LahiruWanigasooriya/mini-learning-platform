@@ -4,3 +4,7 @@ output "ecr_repository_urls" {
     name => repo.repository_url
   }
 }
+
+output "eks_cluster_name" {
+  value = module.eks.cluster_name
+}
