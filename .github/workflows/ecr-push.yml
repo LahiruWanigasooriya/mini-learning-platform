@@ -1,20 +1,20 @@
-name: Setup AWS EKS Environment
+name: Deploy to Kubernetes
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
+  EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
 
 jobs:
-  setup-environment:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -22,12 +22,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Update kubeconfig
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Connect kubectl to EKS
         run: |
           aws eks update-kubeconfig \
             --region $AWS_REGION \
-            --name $CLUSTER_NAME
+            --name $EKS_CLUSTER_NAME
 
-      - name: Verify cluster connection
+      - name: Deploy Kubernetes manifests
         run: |
-          kubectl get nodes
+          kubectl apply -f k8s/
