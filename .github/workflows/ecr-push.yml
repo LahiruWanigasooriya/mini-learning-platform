@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         service:
           - name: api-gateway
@@ -44,14 +45,16 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ matrix.service.name }}:latest "${{ matrix.service.context }}"
+          docker build \
+            -t ${{ matrix.service.name }}:latest \
+            "${{ matrix.service.context }}"
 
-      - name: Tag Docker image
+      - name: Tag image for ECR
         run: |
-          docker tag ${{ matrix.service.name }}:latest ${{ env.ECR_REGISTRY }}/${{ matrix.service.name }}:${{ github.sha }}
-          docker tag ${{ matrix.service.name }}:latest ${{ env.ECR_REGISTRY }}/${{ matrix.service.name }}:latest
+          docker tag \
+            ${{ matrix.service.name }}:latest \
+            ${{ env.ECR_REGISTRY }}/${{ matrix.service.name }}:latest
 
-      - name: Push Docker image
+      - name: Push latest image to ECR
         run: |
-          docker push ${{ env.ECR_REGISTRY }}/${{ matrix.service.name }}:${{ github.sha }}
           docker push ${{ env.ECR_REGISTRY }}/${{ matrix.service.name }}:latest
