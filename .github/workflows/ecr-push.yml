@@ -1,9 +1,6 @@
-name: Deploy to Kubernetes
+name: Provision EKS and Deploy Kubernetes
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 env:
@@ -11,7 +8,7 @@ env:
   EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
 
 jobs:
-  deploy:
+  terraform-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,6 +21,21 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: terraform
+        run: terraform plan
+
+      - name: Terraform Apply
+        working-directory: terraform
+        run: terraform apply -auto-approve
 
       - name: Setup kubectl
         uses: azure/setup-kubectl@v4
