@@ -19,8 +19,8 @@ stages:
   before_script:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
   script:
-    - docker build -t $DOCKER_USER/$SERVICE_NAME:latest $SERVICE_PATH
-    - docker push $DOCKER_USER/$SERVICE_NAME:latest
+    - docker build -t "$DOCKER_USER/$SERVICE_NAME:latest" "$SERVICE_PATH"
+    - docker push "$DOCKER_USER/$SERVICE_NAME:latest"
 
 build-auth:
   extends: .build-template
