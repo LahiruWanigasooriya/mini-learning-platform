@@ -81,7 +81,7 @@ services:
     depends_on:
       course-mongo:
         condition: service_healthy
-
+  
   notification-service:
     build: "./services/Notification Service"
     container_name: notification-service
@@ -93,7 +93,7 @@ services:
     depends_on:
       mysql-db:
         condition: service_healthy
-
+  
   front-end:
     build: ./front-end
     container_name: front-end
@@ -104,4 +104,4 @@ services:
 
 volumes:
   enrollment_postgres_data:
-  course_mongo_data:
+  course_mongo_data:
