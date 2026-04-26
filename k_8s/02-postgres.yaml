@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: enrollment-postgres
+  namespace: mini-lms
+spec:
+  selector:
+    app: enrollment-postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: enrollment-postgres
+  namespace: mini-lms
+spec:
+  serviceName: enrollment-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: enrollment-postgres
+  template:
+    metadata:
+      labels:
+        app: enrollment-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: enrollment_db
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: password
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
