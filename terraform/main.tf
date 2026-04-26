@@ -53,3 +53,20 @@ module "eks" {
     Project = var.project_name
   }
 }
+
+
+resource "aws_ecr_repository" "services" {
+  for_each = toset(local.services)
+
+  name                 = each.value
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = {
+    Project = var.project_name
+  }
+}
