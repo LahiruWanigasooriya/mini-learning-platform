@@ -4,7 +4,8 @@ services:
     container_name: mysql-db
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: auth_db
+    volumes:
+      - ./docker-init/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
       interval: 10s
@@ -54,6 +55,7 @@ services:
     depends_on:
       - auth-service
       - enrollment-service
+      - course-catalog-service
 
   course-mongo:
     image: mongo:7
