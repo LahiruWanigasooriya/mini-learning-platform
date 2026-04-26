@@ -5,13 +5,13 @@ const notificationRoutes = require('./routes/notification.routes');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 8083;
+const port = process.env.PORT;
 
 app.use(express.json());
 
 app.use('/api/notifications', notificationRoutes);
 
-app.get('/health', (req, res) => {
+app.get('/api/notifications/health', (req, res) => {
     res.json({ status: 'Notification Service is running on Node.js' });
 });
 
