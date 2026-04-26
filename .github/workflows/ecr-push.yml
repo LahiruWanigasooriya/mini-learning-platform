@@ -1,18 +1,38 @@
-
-name: Setup AWS EKS Environment
+name: Build and Push Docker Images to ECR
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
 
 jobs:
-  setup-environment:
+  build-and-push:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - name: api-gateway
+            context: ./api-gateway
+          - name: auth-service
+            context: ./services/User-Auth-Service
+          - name: course-catalog-service
+            context: ./services/Course Catalog Service
+          - name: enrollment-service
+            context: ./services/Enrollment & Progress Service
+          - name: notification-service
+            context: ./services/Notification Service
+
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -20,12 +40,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Update kubeconfig
-        run: |
-          aws eks update-kubeconfig \
-            --region $AWS_REGION \
-            --name $CLUSTER_NAME
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Verify cluster connection
+      - name: Build Docker image
         run: |
-          kubectl get nodes
+          docker build \
+            -t ${{ matrix.service.name }}:latest \
+            "${{ matrix.service.context }}"
+
+      - name: Tag image for ECR
+        run: |
+          docker tag \
+            ${{ matrix.service.name }}:latest \
+            ${{ env.ECR_REGISTRY }}/${{ matrix.service.name }}:latest
+
+      - name: Push latest image to ECR
+        run: |
+          docker push ${{ env.ECR_REGISTRY }}/${{ matrix.service.name }}:latest
