@@ -1,21 +1,24 @@
-name: Provision EKS and Deploy Kubernetes
+name: Terraform EKS Setup
 
 on:
   workflow_dispatch:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
 
 jobs:
-  terraform-and-deploy:
+  terraform:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: terraform
+
     steps:
-      - name: Checkout source code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
+      - name: AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -26,26 +29,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        working-directory: terraform
         run: terraform init
 
-      - name: Terraform Plan
-        working-directory: terraform
-        run: terraform plan
-
       - name: Terraform Apply
-        working-directory: terraform
         run: terraform apply -auto-approve
-
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v4
-
-      - name: Connect kubectl to EKS
-        run: |
-          aws eks update-kubeconfig \
-            --region $AWS_REGION \
-            --name $EKS_CLUSTER_NAME
-
-      - name: Deploy Kubernetes manifests
-        run: |
-          kubectl apply -f k8s/
