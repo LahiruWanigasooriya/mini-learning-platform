@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: platform-config
+  namespace: mini-learning-platform
+data:
+  # Database URLs
+  MYSQL_HOST: "mysql-db"
+  POSTGRES_HOST: "enrollment-postgres"
+  MONGO_HOST: "course-mongo"
+  
+  # Service Ports
+  AUTH_SERVICE_PORT: "8081"
+  ENROLLMENT_SERVICE_PORT: "8082"
+  COURSE_CATALOG_PORT: "8083"
+  NOTIFICATION_SERVICE_PORT: "8084"
+  API_GATEWAY_PORT: "8080"
+  
+  # Internal Service URLs (for API Gateway and cross-service calls)
+  AUTH_SERVICE_URL: "http://auth-service:8081"
+  ENROLLMENT_SERVICE_URL: "http://enrollment-service:8082"
+  COURSE_CATALOG_URL: "http://course-catalog-service:8083"
+  NOTIFICATION_SERVICE_URL: "http://notification-service:8084"

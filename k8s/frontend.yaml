@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-end
+  namespace: mini-learning-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-end
+  template:
+    metadata:
+      labels:
+        app: front-end
+    spec:
+      containers:
+      - name: front-end
+        image: senura2001/front-end:latest
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-end
+  namespace: mini-learning-platform
+spec:
+  type: LoadBalancer
+  selector:
+    app: front-end
+  ports:
+  - port: 80
+    targetPort: 80
