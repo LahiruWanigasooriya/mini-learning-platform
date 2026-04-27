@@ -135,9 +135,8 @@ public class EnrollmentProgressService {
         return progressRepository.save(progress);
     }
 
-    public Progress getProgress(Long userId, Long courseId) {
-        //chnage Long to string
-        return progressRepository.findByUserIdAndCourseId(userId, String.valueOf(courseId))
+    public Progress getProgress(Long userId, String courseId) {
+        return progressRepository.findByUserIdAndCourseId(userId, courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Progress not found"));
     }
 }

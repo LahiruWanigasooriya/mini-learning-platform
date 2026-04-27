@@ -37,7 +37,7 @@ public class EnrollmentProgressController {
 
     @GetMapping("/progress/user/{userId}/course/{courseId}")
     public Progress getProgress(@PathVariable Long userId,
-                                @PathVariable Long courseId) {
+                                @PathVariable String courseId) {
         return enrollmentProgressService.getProgress(userId, courseId);
     }
 }
