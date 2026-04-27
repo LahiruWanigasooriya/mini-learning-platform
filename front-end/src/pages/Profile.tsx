@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { User, Mail, Phone, Book, Save, Edit2, X, Camera, Shield, Calendar } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { updateProfile } from '../api/services';
+import { toast } from 'react-toastify';
 
 const Profile: React.FC = () => {
   const { user, login } = useAuth(); // login here can be used to refresh the user context
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
 
   const [formData, setFormData] = useState({
     firstName: user?.firstName || '',
@@ -36,16 +36,15 @@ const Profile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage({ type: '', text: '' });
     try {
       await updateProfile(formData);
-      setMessage({ type: 'success', text: 'Profile updated successfully!' });
+      toast.success('Profile updated successfully!');
       setIsEditing(false);
       // In a real app, you'd fetch the user again or update context
       // For now, we'll assume the update worked
     } catch (error) {
       console.error('Update failed:', error);
-      setMessage({ type: 'error', text: 'Failed to update profile. Please check Gateway routing.' });
+      toast.error('Failed to update profile. Please check Gateway routing.');
     } finally {
       setLoading(false);
     }
@@ -75,13 +74,6 @@ const Profile: React.FC = () => {
           </button>
         )}
       </div>
-
-      {message.text && (
-        <div className={`p-4 rounded-xl mb-6 flex items-center gap-3 animate-slide-up ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-          {message.type === 'success' ? <Shield className="h-5 w-5" /> : <X className="h-5 w-5" />}
-          <p className="text-sm font-medium">{message.text}</p>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Sidebar / Avatar */}

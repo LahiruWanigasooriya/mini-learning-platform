@@ -4,6 +4,7 @@ import { getCourseSummary, enrollInCourse } from '../api/services';
 import type { Course } from '../types';
 import { PlayCircle, Clock, Award, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const CourseDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,16 +37,16 @@ const CourseDetail: React.FC = () => {
 
   const handleEnroll = async () => {
     if (!isAuthenticated) {
-      alert("Please log in to enroll.");
+      toast.warn("Please log in to enroll.");
       return;
     }
     setEnrolling(true);
     try {
       await enrollInCourse({ userId: user?.id, courseId: id });
-      alert("Successfully enrolled!");
+      toast.success("Successfully enrolled!");
     } catch (err) {
       console.error(err);
-      alert("Enrolled successfully (Simulated)");
+      toast.info("Enrolled (Demo Simulation)");
     } finally {
       setEnrolling(false);
     }

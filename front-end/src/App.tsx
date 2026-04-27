@@ -14,6 +14,9 @@ import CourseDetail from './pages/CourseDetail';
 import CourseCreate from './pages/CourseCreate';
 import CourseEdit from './pages/CourseEdit';
 import Profile from './pages/Profile';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useTheme } from './context/ThemeContext';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -21,8 +24,21 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const AppRoutes = () => {
+  const { isDark } = useTheme();
   return (
     <div className="min-h-screen bg-mesh" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', transition: 'background-color 0.35s ease' }}>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={isDark ? 'dark' : 'light'}
+      />
       <Navbar />
       <main className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <Routes>

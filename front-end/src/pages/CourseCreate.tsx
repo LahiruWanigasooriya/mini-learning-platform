@@ -8,6 +8,7 @@ import {
   BookOpen, Layers, FileText, CheckCircle, AlertCircle,
   ChevronDown, ChevronUp,
 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const CATEGORIES = [
   'Web Development', 'Mobile Development', 'Data Science',
@@ -45,8 +46,6 @@ const CourseCreate: React.FC = () => {
 
   // UI state
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   // === Module helpers ===
   const addModule = () => {
@@ -120,11 +119,9 @@ const CourseCreate: React.FC = () => {
   // === Submit ===
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
 
     if (!title.trim() || !description.trim() || !category) {
-      setError('Please fill in all required fields (Title, Description, Category).');
+      toast.warn('Please fill in all required fields (Title, Description, Category).');
       return;
     }
 
@@ -154,12 +151,12 @@ const CourseCreate: React.FC = () => {
 
     try {
       await createCourse(payload);
-      setSuccess('Course created successfully!');
+      toast.success('Course created successfully!');
       setTimeout(() => navigate('/instructor/dashboard'), 1200);
     } catch (err: any) {
       console.error(err);
       // Mock success for testing without backend
-      setSuccess('Course created successfully! (mock)');
+      toast.info('Course created (demo bypass)');
       setTimeout(() => navigate('/instructor/dashboard'), 1200);
     } finally {
       setLoading(false);
@@ -183,20 +180,6 @@ const CourseCreate: React.FC = () => {
         <h1 className="text-3xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>Create New Course</h1>
         <p style={{ color: 'var(--text-secondary)' }}>Fill in the details below to create your course.</p>
       </div>
-
-      {/* Alerts */}
-      {error && (
-        <div className="mb-6 rounded-xl p-4 flex items-start gap-3 animate-fade-in" style={{ background: 'var(--danger-soft)', border: '1px solid var(--danger)' }}>
-          <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--danger)' }} />
-          <p className="text-sm font-medium" style={{ color: 'var(--danger)' }}>{error}</p>
-        </div>
-      )}
-      {success && (
-        <div className="mb-6 rounded-xl p-4 flex items-start gap-3 animate-fade-in" style={{ background: 'var(--success-soft)', border: '1px solid var(--success)' }}>
-          <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--success)' }} />
-          <p className="text-sm font-medium" style={{ color: 'var(--success)' }}>{success}</p>
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* ========== SECTION 1: Basic Info ========== */}
