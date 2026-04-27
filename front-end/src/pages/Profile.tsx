@@ -12,9 +12,9 @@ const Profile: React.FC = () => {
   const [formData, setFormData] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
-    bio: (user as any)?.profile?.bio || '',
-    phoneNumber: (user as any)?.profile?.phoneNumber || '',
-    avatarUrl: (user as any)?.profile?.avatarUrl || ''
+    bio: user?.profile?.bio || '',
+    phoneNumber: user?.profile?.phoneNumber || '',
+    avatarUrl: user?.profile?.avatarUrl || ''
   });
 
   useEffect(() => {
@@ -22,9 +22,9 @@ const Profile: React.FC = () => {
       setFormData({
         firstName: user.firstName || '',
         lastName: user.lastName || '',
-        bio: (user as any).profile?.bio || '',
-        phoneNumber: (user as any).profile?.phoneNumber || '',
-        avatarUrl: (user as any).profile?.avatarUrl || ''
+        bio: user.profile?.bio || '',
+        phoneNumber: user.profile?.phoneNumber || '',
+        avatarUrl: user.profile?.avatarUrl || ''
       });
     }
   }, [user]);

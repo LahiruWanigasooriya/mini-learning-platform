@@ -5,6 +5,14 @@ export interface User {
   roles?: string[];
   firstName?: string;
   lastName?: string;
+  createdAt?: string;
+  profile?: {
+    firstName?: string;
+    lastName?: string;
+    bio?: string;
+    avatarUrl?: string;
+    phoneNumber?: string;
+  };
 }
 
 // --- Course Catalog Types (matches backend schemas) ---
