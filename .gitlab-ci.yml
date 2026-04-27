@@ -1,0 +1,88 @@
+variables:
+  DOCKER_USER: "senura2001"
+  # These variables should be set in GitLab CI/CD Settings -> Variables
+  # DOCKER_PASSWORD: (Masked Variable)
+  # AWS_ACCESS_KEY_ID: (Masked Variable)
+  # AWS_SECRET_ACCESS_KEY: (Masked Variable)
+  # AWS_DEFAULT_REGION: "us-east-1"
+  # CLUSTER_NAME: "your-eks-cluster-name"
+
+stages:
+  - build
+  - push
+  - deploy
+
+.build-template:
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  before_script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+  script:
+    - docker build -t "$DOCKER_USER/$SERVICE_NAME:latest" "$SERVICE_PATH"
+    - docker push "$DOCKER_USER/$SERVICE_NAME:latest"
+
+build-auth:
+  extends: .build-template
+  variables:
+    SERVICE_NAME: "auth-service"
+    SERVICE_PATH: "./services/User-Auth-Service"
+  stage: build
+
+build-enrollment:
+  extends: .build-template
+  variables:
+    SERVICE_NAME: "enrollment-service"
+    SERVICE_PATH: "./services/Enrollment & Progress Service"
+  stage: build
+
+build-course:
+  extends: .build-template
+  variables:
+    SERVICE_NAME: "course-catalog-service"
+    SERVICE_PATH: "./services/Course Catalog Service"
+  stage: build
+
+build-notification:
+  extends: .build-template
+  variables:
+    SERVICE_NAME: "notification-service"
+    SERVICE_PATH: "./services/Notification Service"
+  stage: build
+
+build-gateway:
+  extends: .build-template
+  variables:
+    SERVICE_NAME: "api-gateway"
+    SERVICE_PATH: "./api-gateway"
+  stage: build
+
+build-frontend:
+  extends: .build-template
+  variables:
+    SERVICE_NAME: "front-end"
+    SERVICE_PATH: "./front-end"
+  stage: build
+
+deploy-to-eks:
+  stage: deploy
+  image: alpine/k8s:1.31.0
+  before_script:
+    - echo "Initializing EKS deployment..."
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region $AWS_DEFAULT_REGION
+    - aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_DEFAULT_REGION
+  script:
+    - kubectl apply -f k8s/namespace.yaml
+    - kubectl apply -f k8s/configmap.yaml
+    - kubectl apply -f k8s/databases.yaml
+    - kubectl apply -f k8s/auth-service.yaml
+    - kubectl apply -f k8s/enrollment-service.yaml
+    - kubectl apply -f k8s/course-catalog-service.yaml
+    - kubectl apply -f k8s/notification-service.yaml
+    - kubectl apply -f k8s/api-gateway.yaml
+    - kubectl apply -f k8s/frontend.yaml
+    - kubectl rollout restart deployment -n mini-learning-platform
+  only:
+    - main

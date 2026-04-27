@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: course-catalog-service
+  namespace: mini-learning-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: course-catalog-service
+  template:
+    metadata:
+      labels:
+        app: course-catalog-service
+    spec:
+      containers:
+      - name: course-catalog-service
+        image: senura2001/course-catalog-service:latest
+        ports:
+        - containerPort: 8083
+        env:
+        - name: MONGO_URI
+          value: "mongodb://course-mongo:27017"
+        - name: DATABASE_NAME
+          value: "course_catalog_db"
+        - name: COURSE_COLLECTION
+          value: "courses"
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: course-catalog-service
+  namespace: mini-learning-platform
+spec:
+  selector:
+    app: course-catalog-service
+  ports:
+  - port: 8083
+    targetPort: 8083
