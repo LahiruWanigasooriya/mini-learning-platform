@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BookOpen, UserCircle, LogOut, GraduationCap, Users, Sun, Moon, Menu, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import NotificationBell from './NotificationBell';
 
 const Navbar: React.FC = () => {
   const { isAuthenticated, user, logout } = useAuth();
@@ -54,6 +55,10 @@ const Navbar: React.FC = () => {
 
                   <div className="w-px h-6 mx-1" style={{ background: 'var(--border)' }} />
 
+                  <NotificationBell />
+
+                  <div className="w-px h-6 mx-1" style={{ background: 'var(--border)' }} />
+
                   {/* Role badge */}
                   {isInstructor ? (
                     <span className="badge badge-violet">
@@ -67,10 +72,13 @@ const Navbar: React.FC = () => {
                     </span>
                   )}
 
-                  <div className="flex items-center gap-2 ml-1">
+                  <Link 
+                    to="/profile" 
+                    className="flex items-center gap-2 ml-1 p-1.5 rounded-lg transition-all duration-200 hover:bg-[var(--accent-soft)]"
+                  >
                     <UserCircle className="h-5 w-5" style={{ color: 'var(--text-tertiary)' }} />
                     <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{user?.firstName || 'User'}</span>
-                  </div>
+                  </Link>
 
                   <button
                     onClick={handleLogout}
@@ -180,6 +188,16 @@ const Navbar: React.FC = () => {
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                   >
                     {isInstructor ? '📊 Dashboard' : '📚 My Learning'}
+                  </Link>
+                  <Link
+                    to="/profile"
+                    onClick={() => setMobileOpen(false)}
+                    className="p-3 rounded-xl text-sm font-medium transition-colors"
+                    style={{ color: 'var(--text-primary)' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-soft)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                  >
+                    👤 My Profile
                   </Link>
                   <Link
                     to="/"

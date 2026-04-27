@@ -13,6 +13,7 @@ import InstructorDashboard from './pages/InstructorDashboard';
 import CourseDetail from './pages/CourseDetail';
 import CourseCreate from './pages/CourseCreate';
 import CourseEdit from './pages/CourseEdit';
+import Profile from './pages/Profile';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -35,6 +36,7 @@ const AppRoutes = () => {
           <Route path="/course/:id" element={<CourseDetail />} />
           {/* Student Protected Routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           {/* Instructor Protected Routes */}
           <Route path="/instructor/dashboard" element={<ProtectedRoute><InstructorDashboard /></ProtectedRoute>} />
           <Route path="/instructor/courses/create" element={<ProtectedRoute><CourseCreate /></ProtectedRoute>} />

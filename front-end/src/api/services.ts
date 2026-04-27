@@ -19,3 +19,14 @@ export const getUserEnrollments = (userId: number) => api.get(`/enrollments/user
 export const completeLesson = (data: any) => api.post('/enrollments/progress/complete-lesson', data);
 export const getProgress = (userId: number, courseId: string) => api.get(`/enrollments/progress/user/${userId}/course/${courseId}`);
 
+// --- Notifications ---
+export const getNotifications = () => api.get('/notifications');
+export const markNotificationAsRead = (id: string) => api.put(`/notifications/${id}/read`);
+export const markAllNotificationsAsRead = () => api.put('/notifications/read-all');
+export const deleteNotification = (id: string) => api.delete(`/notifications/${id}`);
+export const getNotificationHealth = () => api.get('/notifications/health');
+
+// --- User Management ---
+export const updateProfile = (data: any) => api.put('/users/me', data);
+export const getAdminStats = () => api.get('/admin/stats');
+
