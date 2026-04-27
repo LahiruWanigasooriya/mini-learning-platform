@@ -69,7 +69,10 @@ deploy-to-eks:
   image: alpine/k8s:1.31.0
   before_script:
     - echo "Initializing EKS deployment..."
-    # aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_DEFAULT_REGION.
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region $AWS_DEFAULT_REGION
+    - aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_DEFAULT_REGION
   script:
     - kubectl apply -f k8s/namespace.yaml
     - kubectl apply -f k8s/configmap.yaml
