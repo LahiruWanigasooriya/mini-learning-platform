@@ -66,9 +66,7 @@ build-frontend:
 
 deploy-to-eks:
   stage: deploy
-  image:
-    name: bitnami/kubectl:latest
-    entrypoint: [""]
+  image: alpine/k8s:1.31.0
   before_script:
     - echo "Initializing EKS deployment..."
     # aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_DEFAULT_REGION.
