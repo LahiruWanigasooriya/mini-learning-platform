@@ -3,6 +3,8 @@ import api from './axios';
 // --- Auth & User ---
 export const loginUser = (data: any) => api.post('/auth/login', data);
 export const registerUser = (data: any) => api.post('/auth/register', data);
+export const refreshToken = (data: any) => api.post('/auth/refresh', data);
+export const logoutUser = (data: any) => api.post('/auth/logout', data);
 export const getUserProfile = () => api.get('/users/me');
 
 // --- Courses ---
@@ -20,13 +22,14 @@ export const completeLesson = (data: any) => api.post('/enrollments/progress/com
 export const getProgress = (userId: number, courseId: string) => api.get(`/enrollments/progress/user/${userId}/course/${courseId}`);
 
 // --- Notifications ---
-export const getNotifications = () => api.get('/notifications');
+export const getNotifications = (userId: string | number) => api.get(`/notifications/user/${userId}`);
 export const markNotificationAsRead = (id: string) => api.put(`/notifications/${id}/read`);
-export const markAllNotificationsAsRead = () => api.put('/notifications/read-all');
-export const deleteNotification = (id: string) => api.delete(`/notifications/${id}`);
 export const getNotificationHealth = () => api.get('/notifications/health');
 
-// --- User Management ---
+// --- User Management & Admin ---
 export const updateProfile = (data: any) => api.put('/users/me', data);
-export const getAdminStats = () => api.get('/admin/stats');
+export const getAllUsers = () => api.get('/admin/users');
+export const getUserByIdAdmin = (id: number) => api.get(`/admin/users/${id}`);
+export const assignUserRole = (id: number, role: string) => api.put(`/admin/users/${id}/roles`, { role });
+export const deactivateUser = (id: number) => api.delete(`/admin/users/${id}`);
 

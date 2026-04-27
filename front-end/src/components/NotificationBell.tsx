@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bell, Check, Trash2, X, AlertCircle, Info, CheckCircle2 } from 'lucide-react';
-import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification } from '../api/services';
+import { getNotifications, markNotificationAsRead } from '../api/services';
+import { useAuth } from '../context/AuthContext';
 
 interface Notification {
   id: string;
@@ -15,12 +16,14 @@ const NotificationBell: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const fetchNotifications = async () => {
+    if (!user?.id) return;
     try {
       setLoading(true);
-      const response = await getNotifications();
+      const response = await getNotifications(user.id);
       // Assuming response.data contains the array
       setNotifications(response.data || []);
     } catch (error) {
@@ -34,7 +37,7 @@ const NotificationBell: React.FC = () => {
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 30000); // Poll every 30s
     return () => clearInterval(interval);
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -54,25 +57,6 @@ const NotificationBell: React.FC = () => {
       setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
     } catch (error) {
       console.error('Failed to mark notification as read:', error);
-    }
-  };
-
-  const handleMarkAllRead = async () => {
-    try {
-      await markAllNotificationsAsRead();
-      setNotifications(notifications.map(n => ({ ...n, read: true })));
-    } catch (error) {
-      console.error('Failed to mark all as read:', error);
-    }
-  };
-
-  const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    try {
-      await deleteNotification(id);
-      setNotifications(notifications.filter(n => n.id !== id));
-    } catch (error) {
-      console.error('Failed to delete notification:', error);
     }
   };
 
@@ -106,15 +90,6 @@ const NotificationBell: React.FC = () => {
         <div className="absolute right-0 mt-2 w-80 glass-strong rounded-2xl shadow-2xl overflow-hidden z-50 animate-slide-up border border-[var(--glass-border)]">
           <div className="p-4 border-b border-[var(--border)] flex justify-between items-center">
             <h3 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>Notifications</h3>
-            {unreadCount > 0 && (
-              <button
-                onClick={handleMarkAllRead}
-                className="text-[10px] font-bold uppercase tracking-wider hover:underline"
-                style={{ color: 'var(--accent)' }}
-              >
-                Mark all read
-              </button>
-            )}
           </div>
 
           <div className="max-h-96 overflow-y-auto">
@@ -144,12 +119,6 @@ const NotificationBell: React.FC = () => {
                           <p className={`text-xs font-bold truncate ${!n.read ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
                             {n.title}
                           </p>
-                          <button
-                            onClick={(e) => handleDelete(n.id, e)}
-                            className="opacity-0 group-hover/item:opacity-100 p-1 hover:bg-red-100 hover:text-red-500 rounded transition-all"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </button>
                         </div>
                         <p className="text-[11px] leading-relaxed mt-0.5 line-clamp-2" style={{ color: 'var(--text-tertiary)' }}>
                           {n.message}
