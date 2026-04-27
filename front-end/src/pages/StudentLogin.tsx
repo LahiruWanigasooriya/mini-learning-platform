@@ -3,19 +3,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { loginUser } from '../api/services';
 import { GraduationCap, AlertCircle, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const StudentLogin: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
 
       try {
@@ -26,7 +25,7 @@ const StudentLogin: React.FC = () => {
         // Check if user has STUDENT role
         const roles: string[] = data.user?.roles || [];
         if (roles.length > 0 && !roles.includes('STUDENT')) {
-          setError('This account is not registered as a Student. Please use the Instructor login.');
+          toast.error('This account is not registered as a Student. Please use the Instructor login.');
           setLoading(false);
           return;
         }
@@ -40,9 +39,10 @@ const StudentLogin: React.FC = () => {
       console.error(err);
       if (email === 'student@example.com') {
         login('mock_jwt_token_student', { id: 1, email, role: 'STUDENT', firstName: 'Student' });
+        toast.info('Logged in with demo credentials');
         navigate('/dashboard');
       } else {
-        setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
+        toast.error(err.response?.data?.message || 'Invalid email or password. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -92,14 +92,6 @@ const StudentLogin: React.FC = () => {
           </div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
-            {error && (
-              <div className="rounded-xl p-4 animate-fade-in" style={{ background: 'var(--danger-soft)', border: '1px solid var(--danger)' }}>
-                <div className="flex">
-                  <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--danger)' }} />
-                  <p className="ml-3 text-sm font-medium" style={{ color: 'var(--danger)' }}>{error}</p>
-                </div>
-              </div>
-            )}
 
             <div>
               <label htmlFor="student-email" className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>

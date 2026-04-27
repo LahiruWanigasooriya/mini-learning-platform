@@ -6,6 +6,7 @@ import {
   Eye, Pencil, Trash2, AlertTriangle, X,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const InstructorDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -69,9 +70,11 @@ const InstructorDashboard: React.FC = () => {
     try {
       await deleteCourse(deleteTarget.courseId || deleteTarget.id);
       setCourses(prev => prev.filter(c => (c.courseId || c.id) !== (deleteTarget.courseId || deleteTarget.id)));
+      toast.success('Course deleted successfully');
     } catch {
       // Mock: remove from local state anyway
       setCourses(prev => prev.filter(c => (c.courseId || c.id) !== (deleteTarget.courseId || deleteTarget.id)));
+      toast.info('Course removed (Demo Mode)');
     } finally {
       setDeleting(false);
       setDeleteTarget(null);
