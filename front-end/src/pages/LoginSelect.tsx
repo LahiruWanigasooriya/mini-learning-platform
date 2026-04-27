@@ -96,39 +96,6 @@ const LoginSelect: React.FC = () => {
         </Link>
       </div>
 
-      {/* Bypass / Demo Section */}
-      <div className="mt-12 glass-card p-6 border-dashed border-2 border-[var(--border)] max-w-lg w-full">
-        <div className="flex items-center gap-2 mb-4 justify-center">
-          <ShieldCheck className="h-4 w-4" style={{ color: 'var(--warning)' }} />
-          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--text-tertiary)' }}>Development Bypass</span>
-        </div>
-        <div className="flex flex-wrap justify-center gap-3">
-          <button 
-            onClick={() => {
-              login('mock_token_student', { id: 1, email: 'student@demo.com', role: 'STUDENT', firstName: 'Demo', lastName: 'Student' });
-              navigate('/dashboard');
-            }}
-            className="px-4 py-2 rounded-xl text-xs font-bold transition-all hover:scale-105 active:scale-95"
-            style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--accent)' }}
-          >
-            Login as Student
-          </button>
-          <button 
-            onClick={() => {
-              login('mock_token_instructor', { id: 2, email: 'instructor@demo.com', role: 'INSTRUCTOR', firstName: 'Demo', lastName: 'Instructor' });
-              navigate('/instructor/dashboard');
-            }}
-            className="px-4 py-2 rounded-xl text-xs font-bold transition-all hover:scale-105 active:scale-95"
-            style={{ background: 'var(--violet-soft)', color: 'var(--violet)', border: '1px solid var(--violet)' }}
-          >
-            Login as Instructor
-          </button>
-        </div>
-        <p className="mt-3 text-[10px] text-center italic" style={{ color: 'var(--text-tertiary)' }}>
-          * These buttons skip backend authentication for testing UI components.
-        </p>
-      </div>
-
       {/* Footer link */}
       <p className="mt-8 text-sm" style={{ color: 'var(--text-secondary)' }}>
         Don't have an account?{' '}

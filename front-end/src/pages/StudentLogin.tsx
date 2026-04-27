@@ -32,18 +32,11 @@ const StudentLogin: React.FC = () => {
         login(data.accessToken, data.user);
         navigate('/dashboard');
       } else {
-        login('mock_jwt_token_student', { id: 1, email, role: 'STUDENT', firstName: 'Student' });
-        navigate('/dashboard');
+        toast.error('Login failed: No access token received.');
       }
     } catch (err: any) {
       console.error(err);
-      if (email === 'student@example.com') {
-        login('mock_jwt_token_student', { id: 1, email, role: 'STUDENT', firstName: 'Student' });
-        toast.info('Logged in with demo credentials');
-        navigate('/dashboard');
-      } else {
-        toast.error(err.response?.data?.message || 'Invalid email or password. Please try again.');
-      }
+      toast.error(err.response?.data?.message || 'Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }

@@ -24,19 +24,11 @@ const Login: React.FC = () => {
         login(response.data.token);
         navigate('/dashboard');
       } else {
-        // Mock success for testing if backend isn't ready
-        login('mock_jwt_token_123');
-        navigate('/dashboard');
+        setError('Login failed: No access token received.');
       }
     } catch (err: any) {
       console.error(err);
-      // Fallback for visual testing
-      if (email === 'test@example.com') {
-        login('mock_jwt_token_123');
-        navigate('/dashboard');
-      } else {
-        setError(err.response?.data?.message || 'Failed to login. Please check your credentials.');
-      }
+      setError(err.response?.data?.message || 'Failed to login. Please check your credentials.');
     } finally {
       setLoading(false);
     }

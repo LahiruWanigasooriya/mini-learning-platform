@@ -29,9 +29,7 @@ const Register: React.FC = () => {
       navigate('/login');
     } catch (err: any) {
       console.error(err);
-      // Fallback for visual testing
-      toast.info('Registration bypass (for demo purposes)');
-      navigate('/login');
+      toast.error(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
