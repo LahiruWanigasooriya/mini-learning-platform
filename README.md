@@ -1,20 +1,38 @@
 # Mini Learning Platform – Microservices
 
-## Overview
+## 1. Project Title & Short Description
+**Mini Learning Platform** is a comprehensive, scalable e-learning platform built using a microservices architecture. It enables users to browse courses, enroll, track progress, and receive notifications, demonstrating modern cloud-native development practices and polyglot microservice design.
 
-This project implements a **microservices-based mini learning platform** using a polyglot architecture. It is fully containerized and orchestration is managed via Docker Compose.
+## 2. Project Overview
+This project implements a fully containerized polyglot microservices-based mini learning platform. It demonstrates modern cloud-native development practices, including service segregation, inter-service communication via REST, API Gateway routing, and the "Database per Service" pattern. Orchestration is seamlessly managed via Docker Compose.
 
-The platform consists of:
-* **Frontend** (React)
-* **API Gateway** (Spring Cloud Gateway)
-* **User Auth Service** (Spring Boot + MySQL)
-* **Enrollment & Progress Service** (Spring Boot + PostgreSQL)
-* **Course Catalog Service** (FastAPI + MongoDB)
-* **Notification Service** (Node.js/Express + MySQL)
+## 3. Screenshots / Demo
 
----
+### Website Preview
+![Website Preview](./img1.png)
 
-## Architecture
+### System Architecture
+![System Architecture Diagram](./img2.png)
+
+## 4. Key Features
+- **User Authentication & Authorization**: Secure login and registration flows.
+- **Course Management**: Browse, search, and view detailed course information.
+- **Enrollment & Progress Tracking**: Enroll in courses and track lesson completions.
+- **Notifications**: Receive notifications for enrollments and course updates.
+- **API Gateway**: A single entry point for all client requests, handling routing and cross-cutting concerns.
+- **Polyglot Stack**: Services are written in Java, Python, and Node.js based on the best fit for the domain.
+- **Independent Scaling**: Containerized architecture allows independent scaling and deployment of services.
+
+## 5. Tech Stack
+- **Frontend**: React 19, TypeScript, Vite, TailwindCSS, Axios
+- **API Gateway**: Spring Cloud Gateway (Java)
+- **User Auth Service**: Spring Boot, MySQL
+- **Enrollment & Progress Service**: Spring Boot, PostgreSQL
+- **Course Catalog Service**: FastAPI (Python), MongoDB
+- **Notification Service**: Node.js, Express, MySQL
+- **Infrastructure & Deployment**: Docker, Docker Compose, Nginx
+
+## 6. System Architecture / Diagram
 
 ```text
 Frontend (Port 5173)
@@ -31,20 +49,40 @@ API Gateway (Port 8080)
    +--> Notification Service (Port 8084, uses MySQL)
 ```
 
----
+## 7. How It Works / Workflow
+- Users interact with the React-based frontend.
+- All requests are routed through the Spring Cloud API Gateway (`localhost:8080`).
+- The Gateway dynamically routes requests to the appropriate backend microservice based on the URL paths.
+- Each service manages its own state with a dedicated database to ensure loose coupling.
+- When cross-service data is needed, services communicate via Synchronous REST (HTTP). For example, the Enrollment Service fetches course details directly from the Course Catalog Service.
 
-## 🚀 How to Run (Using Docker Compose)
+## 8. Project Folder Structure
+```text
+mini-learning-platform-cloud-project/
+│
+├── api-gateway/                  # Spring Cloud Gateway
+├── docker-init/                  # DB initialization scripts (SQL/Mongo)
+├── front-end/                    # React + Vite application
+├── services/                     # Backend Microservices
+│   ├── Course Catalog Service/       # FastAPI + MongoDB
+│   ├── Enrollment & Progress Service/# Spring Boot + PostgreSQL
+│   ├── Notification Service/         # Node.js + MySQL
+│   └── User-Auth-Service/            # Spring Boot + MySQL
+│
+├── docker-compose.yml            # Main orchestration file
+└── README.md
+```
 
-The easiest way to run the entire application, including all microservices and databases, is using Docker Compose.
+## 9. Installation & Setup Guide
+
+The easiest way to run the entire application, including all microservices and databases, is using **Docker Compose**.
 
 ### Prerequisites
-
 * [Docker](https://docs.docker.com/get-docker/) installed and running.
 * [Docker Compose](https://docs.docker.com/compose/install/) installed.
 
 ### Steps to Run
-
-1. **Clone the repository** (if you haven't already) and navigate to the project root directory:
+1. **Clone the repository** and navigate to the project root directory:
    ```bash
    cd mini-learning-platform-cloud-project
    ```
@@ -63,73 +101,61 @@ The easiest way to run the entire application, including all microservices and d
    You should see containers for the databases (`mysql-db`, `enrollment-postgres`, `course-mongo`), the microservices (`auth-service`, `enrollment-service`, `course-catalog-service`, `notification-service`), the `api-gateway`, and the `front-end`.
 
 ### Accessing the Platform
-
 * **Frontend UI**: [http://localhost:5173](http://localhost:5173)
 * **API Gateway**: [http://localhost:8080](http://localhost:8080)
 
----
-
-## 🛑 How to Stop
-
+### How to Stop
 To stop the application and remove the containers, run:
 ```bash
 docker-compose down
 ```
-
 If you also want to remove the database volumes (which will **delete all your data**), run:
 ```bash
 docker-compose down -v
 ```
 
----
+## 10. Environment Variables
+The project uses `docker-compose.yml` to inject environment variables into the services. Key variables include:
+- `MYSQL_ROOT_PASSWORD`
+- `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
+- `MONGO_URI`, `DATABASE_NAME`, `COURSE_COLLECTION`
+- Microservice connection URLs (e.g., `DATABASE_URL` for Notification Service).
 
-## ⚙️ Development / Running Services Individually
+## 11. API Endpoints (Examples)
+All external requests should go through the API Gateway on `localhost:8080`.
 
-If you prefer to run services individually for development:
+- **User Auth Service**:
+  - `POST /api/auth/register` - Register a new user
+  - `POST /api/auth/login` - Authenticate a user
+- **Course Catalog Service**:
+  - `GET /api/courses` - Retrieve all courses
+  - `GET /api/courses/{id}` - Retrieve a specific course
+- **Enrollment Service**:
+  - `POST /api/enrollments` - Enroll in a course
+  - `GET /api/enrollments/user/{userId}` - Get enrollments for a user
 
-1. **Start the Databases via Docker Compose**:
-   You can start just the database containers:
-   ```bash
-   docker-compose up -d mysql-db enrollment-postgres course-mongo
-   ```
+## 12. Testing Instructions
+- **API Testing**: You can test the APIs independently using Postman or cURL by targeting the API Gateway at `http://localhost:8080`.
+- **Frontend Testing**: Access the UI at `http://localhost:5173` and use the built-in interface to trigger API calls seamlessly.
 
-2. **Run the individual microservices**:
-   * **Course Catalog Service**: `cd "services/Course Catalog Service"` and run `uv run uvicorn app.main:app --reload`
-   * **Enrollment & Progress Service**: `cd "services/Enrollment & Progress Service"` and run `mvn spring-boot:run`
-   * *(Follow respective READMEs in other service directories for specific start commands).*
+## 13. Docker / Deployment Instructions
+- The entire application is containerized using `Dockerfile`s in each service directory.
+- `docker-compose.yml` at the root level orchestrates the multi-container setup, including networking and volume management.
+- For isolated service development, you can spin up just the databases:
+  ```bash
+  docker-compose up -d mysql-db enrollment-postgres course-mongo
+  ```
+  Then run your target service locally using its native tooling (e.g., `mvn spring-boot:run` or `uv run uvicorn`).
 
----
+## 14. Key Engineering Decisions / Challenges
+- **API Gateway as the Single Entry Point**: Ensures clients only communicate with one host, simplifying frontend configuration and enabling central routing/CORS handling.
+- **Database per Service**: Adheres strictly to microservices best practices. No shared databases exist, ensuring loose coupling and isolated data domains.
+- **Synchronous REST (HTTP) for Inter-Service Communication**: Chose HTTP REST for simplicity in communication (e.g., Enrollment Service directly requesting Course Summary from Course Catalog Service).
 
-# 🔗 Inter-Service Communication
+## 15. Contributors & Your Contribution
+- Developed and maintained as a cloud computing academic project. 
+*(Feel free to add your specific team member names and roles here)*
 
-### Pattern
-
-* **Synchronous REST (HTTP)**
-
-### Example
-
-Enrollment Service → Course Catalog Service:
-
-```http
-GET /api/courses/{courseId}/summary
-```
-
-Response:
-
-```json
-{
-  "courseId": "68072d92f43c0d5c3f7c1111",
-  "title": "Cloud Computing Basics",
-  "totalLessons": 2,
-  "active": true
-}
-```
-
----
-
-# 🧠 Key Design Decisions
-
-* API Gateway handles **client requests only**.
-* Services communicate **directly with each other**.
-* No shared database between services.
-* Each service owns its own data.
+## 16. License / Acknowledgements
+- **License**: MIT License (or relevant academic license)
+- **Acknowledgements**: Developed for the EC7204 Cloud Computing module.
